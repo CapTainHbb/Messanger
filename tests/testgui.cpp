@@ -8,18 +8,20 @@ class TestGui : public QObject
     Q_OBJECT;
 
 private slots:
-    void init_gui();
+    void initTestCase();
 
     void check_send_message_data();
     void check_send_message();
+
+    void send_message_to_different_chat_data();
+    void send_message_to_different_chat();
 
 private:
     MainWindow main_window;
 };
 
-void TestGui::init_gui()
+void TestGui::initTestCase()
 {
-    main_window.init_layouts();
     main_window.init_widgets();
 }
 
@@ -56,6 +58,18 @@ void TestGui::check_send_message()
     keyboard_events.simulate(main_window.send_message_textbox);
     mouse_events.simulate(main_window.send_message_pushbutton);
     QCOMPARE(main_window.get_last_message_on_active_chat()->text(), results);
+}
+
+void TestGui::send_message_to_different_chat_data()
+{
+    QTest::addColumn<QTestEventList>("type_message");
+    QTest::addColumn<QTestEventList>("click_send_message");
+//    QTest::addColumn<QString
+}
+
+void TestGui::send_message_to_different_chat()
+{
+
 }
 
 QTEST_MAIN(TestGui)
