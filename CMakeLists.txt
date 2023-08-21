@@ -11,22 +11,24 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt5 REQUIRED COMPONENTS Widgets Core Gui Test)
 
+include_directories(D:\\Qt\\Qt5.13.1\\5.13.1\\mingw73_64\\lib\\cmake\\Qt5Core)
+include_directories(D:\\Qt\\Qt5.13.1\\5.13.1\\mingw73_64\\lib\\cmake\\Qt5Gui)
+include_directories(D:\\Qt\\Qt5.13.1\\5.13.1\\mingw73_64\\lib\\cmake\\Qt5Test)
+include_directories(D:\\Qt\\Qt5.13.1\\5.13.1\\mingw73_64\\lib\\cmake\\Qt5Widgets)
+include_directories(D:\\Qt\\Qt5.13.1\\5.13.1\\mingw73_64\\lib\\cmake\\Qt5)
+include_directories(widgets/)
+
 set(PROJECT_SOURCES
         main.cpp
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        widgets/LeftDrawer.cpp
+        widgets/ActiveChat.cpp
 )
 
 add_executable(Messanger ${PROJECT_SOURCES})
 
 target_link_libraries(Messanger PRIVATE Qt5::Widgets)
-
-
-install(TARGETS Messanger
-    BUNDLE DESTINATION .
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
 
 add_subdirectory(tests)

@@ -52,11 +52,11 @@ void TestGui::create_new_chat()
     QFETCH(int, number_of_messages_in_active_chat);
     QFETCH(QString, active_chat_name);
 
-    click_add_new_chat_button.simulate(main_window.new_chat);
+    click_add_new_chat_button.simulate(main_window.left_drawer_widget->new_chat_button);
 
-    QCOMPARE(main_window.get_number_of_all_chats(), number_of_all_chats);
-    QCOMPARE(main_window.get_number_of_messages_in_active_chat() , number_of_messages_in_active_chat);
-    QCOMPARE(main_window.get_active_chat_name(), active_chat_name);
+    QCOMPARE(main_window.left_drawer_widget->get_number_of_all_chats(), number_of_all_chats);
+    QCOMPARE(main_window.active_chat_widget->get_number_of_messages_in_active_chat() , number_of_messages_in_active_chat);
+    QCOMPARE(main_window.active_chat_widget->get_active_chat_name(), active_chat_name);
 }
 
 
@@ -69,15 +69,15 @@ void TestGui::select_chat_data()
 
 void TestGui::select_chat()
 {
-//    QFETCH(QString, selected_chat_name);
+    QFETCH(QString, selected_chat_name);
 
-//    auto found_items{ main_window.list_of_chats->findItems(selected_chat_name, Qt::MatchExactly) };
-//    QVERIFY(found_items.count() != 0);
+    auto found_items{ main_window.left_drawer_widget->list_of_chats->findItems(selected_chat_name, Qt::MatchExactly) };
+    QVERIFY(found_items.count() != 0);
 
-//    auto found_item{ found_items.at(0) };
-//    auto rect{ main_window.list_of_chats->visualItemRect(found_item) };
+    auto found_item{ found_items.at(0) };
+    auto rect{ main_window.left_drawer_widget->list_of_chats->visualItemRect(found_item) };
 
-//    QTest::mouseClick(main_window.list_of_chats->viewport(), Qt::LeftButton, 0, rect.center());
+    QTest::mouseClick(main_window.left_drawer_widget->list_of_chats->viewport(), Qt::LeftButton, 0, rect.center());
 
 //    QCOMPARE(main_window.get_active_chat_name(), selected_chat_name);
 //    select_chat.simulate();
@@ -126,9 +126,9 @@ void TestGui::send_message()
     QFETCH(QTestEventList, mouse_events);
     QFETCH(QString, results);
 
-    keyboard_events.simulate(main_window.send_message_textbox);
-    mouse_events.simulate(main_window.send_message_pushbutton);
-    QCOMPARE(main_window.get_last_message_on_active_chat()->text(), results);
+    keyboard_events.simulate(main_window.active_chat_widget->send_message_textbox);
+    mouse_events.simulate(main_window.active_chat_widget->send_message_pushbutton);
+    QCOMPARE(main_window.active_chat_widget->get_last_message_on_active_chat()->text(), results);
 }
 
 QTEST_MAIN(TestGui)
