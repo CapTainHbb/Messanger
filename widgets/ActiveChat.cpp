@@ -11,7 +11,6 @@ ActiveChat::ActiveChat(QWidget *parent)
     init_active_chat_messages();
     init_send_message_textbox();
     init_send_message_button();
-
 }
 
 ActiveChat::~ActiveChat()
@@ -56,37 +55,34 @@ void ActiveChat::on_send_message_clicked()
 
     active_chat_messages_vbox->addWidget(new_message);
 
+    auto current_messages{ active_chat->data(Qt::ItemDataRole::UserRole).value<QList<QLabel*>>() };
+    current_messages.append(new_message);
+
+    QVariant new_chat_messages;
+    new_chat_messages.setValue(current_messages);
+    
+    active_chat->setData(Qt::ItemDataRole::UserRole, new_chat_messages);
+
     send_message_textbox->clear();
 }
 
-void ActiveChat::clear_active_chat_messages()
+
+QLabel *ActiveChat::get_last_message_on_active_chat() const 
 {
-    if(0 == active_chat_messages_vbox->count())
+    if(nullptr == active_chat)
     {
-        return;
+        throw std::invalid_argument("active chat is nullptr");
     }
 
-    while (QLayoutItem* item = active_chat_messages_vbox->takeAt(0))
-    {
-        active_chat_messages_vbox->removeItem(item);
-    }
-}
-
-QLabel *ActiveChat::get_last_message_on_active_chat()
-{
-    auto number_of_messages = active_chat_messages->children().length();
-    if(0 == number_of_messages)
-    {
-        throw std::invalid_argument("empty messages");
-    }
-
-    auto obj = reinterpret_cast<QLabel*>(active_chat_messages->children().at(number_of_messages - 1));
-    return obj;
+    auto messages{  active_chat->data(Qt::ItemDataRole::UserRole).value<QList<QLabel*>>() };
+    return messages.last();
 }
 
 size_t ActiveChat::get_number_of_messages_in_active_chat() const
 {
-    active_chat_messages_vbox->children().count();
+    auto chat_messages{ active_chat->data(Qt::ItemDataRole::UserRole).value<QList<QLabel*>>() };
+
+    return chat_messages.count();
 }
 
 QString ActiveChat::get_active_chat_name() const
@@ -99,3 +95,18 @@ void ActiveChat::set_active_chat(QListWidgetItem *_active_chat)
     active_chat = _active_chat;
     clear_active_chat_messages();
 }
+
+void ActiveChat::clear_active_chat_messages()
+{
+    if(0 == active_chat_messages_vbox->count())
+    {
+        return;
+    }
+
+    while (QLayoutItem* item = active_chat_messages_vbox->takeAt(0))
+    {
+        active_chat_messages_vbox->removeWidget(item->widget());
+        active_chat_messages_vbox->removeItem(item);
+    }
+}
+

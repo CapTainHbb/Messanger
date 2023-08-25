@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QListWidgetItem>
+#include <QVariant>
 
 class ActiveChat : public  QWidget
 {
@@ -23,7 +24,8 @@ public:
     QVBoxLayout *active_chat_messages_vbox{ nullptr };
     void init_active_chat_messages();
     void clear_active_chat_messages();
-    QLabel *get_last_message_on_active_chat();
+    QLabel *get_last_message_on_active_chat() const;
+    // QList<QLabel *> get_all_messages_on_active_chat() const;
     size_t get_number_of_messages_in_active_chat() const;
 
     QTextEdit *send_message_textbox{ nullptr };

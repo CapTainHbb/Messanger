@@ -31,7 +31,7 @@ void LeftDrawer::init_list_of_chats()
 
 void LeftDrawer::on_chat_item_clicked(QListWidgetItem* item)
 {
-
+    active_chat_widget->set_active_chat(item);
 }
 
 void LeftDrawer::init_new_chat_button()
@@ -53,8 +53,6 @@ void LeftDrawer::on_new_chat_clicked()
     QListWidgetItem *new_chat_item{ new QListWidgetItem(chat_name, list_of_chats) };
     QVariant chat_messages(QList<QLabel*>());
     new_chat_item->setData(Qt::ItemDataRole::UserRole, chat_messages);
-    
-    list_of_chats->addItem(new_chat_item);
 
     active_chat_widget->set_active_chat(new_chat_item);
 }
@@ -62,4 +60,22 @@ void LeftDrawer::on_new_chat_clicked()
 size_t LeftDrawer::get_number_of_all_chats() const
 {
     return list_of_chats->count();
+}
+
+QListWidgetItem* LeftDrawer::find_chat_item(QString chat_name)
+{
+    auto found_chats{ list_of_chats->findItems(chat_name, Qt::MatchExactly) };
+
+    if(0 == found_chats.count())
+    {
+        throw std::invalid_argument("chat nout found-> " + chat_name.toStdString() );
+    }
+
+    return found_chats.at(0);
+    
+}
+
+QRect LeftDrawer::get_chat_item_rect(QListWidgetItem *item)
+{
+    return list_of_chats->visualItemRect(item);
 }

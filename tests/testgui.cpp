@@ -8,7 +8,8 @@ class TestGui : public QObject
     Q_OBJECT;
 
     void send_message();
-    void create_send_message_data();
+
+    void select_chat_by_chat_name(QString chat_name);
 
 private slots:
     void initTestCase();
@@ -21,6 +22,8 @@ private slots:
 
     void check_send_message_data();
     void check_send_message();
+
+    void check_chat_messages_uniqueness();
 
 private:
     MainWindow main_window;
@@ -65,70 +68,76 @@ void TestGui::select_chat_data()
     QTest::addColumn<QString>("selected_chat_name");
 
     QTest::newRow("select_first_chat") << "1";
+    QTest::newRow("select_second_chat") << "2";
 }
 
 void TestGui::select_chat()
 {
     QFETCH(QString, selected_chat_name);
 
-    auto found_items{ main_window.left_drawer_widget->list_of_chats->findItems(selected_chat_name, Qt::MatchExactly) };
-    QVERIFY(found_items.count() != 0);
+    select_chat_by_chat_name(selected_chat_name);
 
-    auto found_item{ found_items.at(0) };
-    auto rect{ main_window.left_drawer_widget->list_of_chats->visualItemRect(found_item) };
+    QCOMPARE(main_window.active_chat_widget->get_active_chat_name(), selected_chat_name);
+}
+
+
+void TestGui::select_chat_by_chat_name(QString chat_name)
+{
+    auto chat_item{ main_window.left_drawer_widget->find_chat_item(chat_name) };
+    auto rect{ main_window.left_drawer_widget->get_chat_item_rect(chat_item) };
 
     QTest::mouseClick(main_window.left_drawer_widget->list_of_chats->viewport(), Qt::LeftButton, 0, rect.center());
-
-//    QCOMPARE(main_window.get_active_chat_name(), selected_chat_name);
-//    select_chat.simulate();
-//    auto selected_items = main_window.list_of_chats->selectedItems();
-
 }
 
 
 void TestGui::check_send_message_data()
 {
-    create_send_message_data();
+    QTest::addColumn<QString>("chat_name");
+    QTest::addColumn<QTestEventList>("type_message");
+    QTest::addColumn<QTestEventList>("click_on_send_message");
+    QTest::addColumn<QString>("results");
+
+    QString chat_name_1{ "1" };
+    QTestEventList first_message_keyboard;
+    first_message_keyboard.addKeyClicks("hello world");
+    QTestEventList first_message_mouse_events;
+    first_message_mouse_events.addMouseClick(Qt::MouseButton::LeftButton);
+    QTest::newRow("first message") << chat_name_1 << first_message_keyboard << first_message_mouse_events << "hello world";
+
+    QString chat_name_2{ "2" };
+    QTestEventList second_message_keyboard;
+    second_message_keyboard.addKeyClicks("im hossein");
+    QTestEventList second_message_mouse_events;
+    second_message_mouse_events.addMouseClick(Qt::MouseButton::LeftButton);
+    QTest::newRow("second message") << chat_name_2 << second_message_keyboard << second_message_mouse_events << "im hossein";
 }
 
 void TestGui::check_send_message()
 {
-    send_message();
-}
-
-
-void TestGui::create_send_message_data()
-{
-    QTest::addColumn<QTestEventList>("keyboard_events");
-    QTest::addColumn<QTestEventList>("mouse_events");
-    QTest::addColumn<QString>("results");
-
-    QTestEventList first_message_keyboard;
-    first_message_keyboard.addKeyClicks("hello world");
-
-    QTestEventList first_message_mouse_events;
-    first_message_mouse_events.addMouseClick(Qt::MouseButton::LeftButton);
-
-    QTest::newRow("first message") << first_message_keyboard << first_message_mouse_events << "hello world";
-
-    QTestEventList second_message_keyboard;
-    second_message_keyboard.addKeyClicks("im hossein");
-
-    QTestEventList second_message_mouse_events;
-    second_message_mouse_events.addMouseClick(Qt::MouseButton::LeftButton);
-
-    QTest::newRow("second message") << second_message_keyboard << second_message_mouse_events << "im hossein";
-}
-
-void TestGui::send_message()
-{
-    QFETCH(QTestEventList, keyboard_events);
-    QFETCH(QTestEventList, mouse_events);
+    QFETCH(QString, chat_name);
+    QFETCH(QTestEventList, type_message);
+    QFETCH(QTestEventList, click_on_send_message);
     QFETCH(QString, results);
 
-    keyboard_events.simulate(main_window.active_chat_widget->send_message_textbox);
-    mouse_events.simulate(main_window.active_chat_widget->send_message_pushbutton);
+    select_chat_by_chat_name(chat_name);
+    type_message.simulate(main_window.active_chat_widget->send_message_textbox);
+    click_on_send_message.simulate(main_window.active_chat_widget->send_message_pushbutton);
+
+    QCOMPARE(main_window.active_chat_widget->get_number_of_messages_in_active_chat(), 1);
     QCOMPARE(main_window.active_chat_widget->get_last_message_on_active_chat()->text(), results);
+}
+
+void TestGui::check_chat_messages_uniqueness()
+{
+    QString first_chat_message{ };
+    select_chat_by_chat_name("1");
+    first_chat_message = main_window.active_chat_widget->get_last_message_on_active_chat()->text();
+    QCOMPARE(first_chat_message, "hello world");
+
+    QString second_chat_message{ };
+    select_chat_by_chat_name("2");
+    second_chat_message = main_window.active_chat_widget->get_last_message_on_active_chat()->text();
+    QCOMPARE(second_chat_message, "im hossein");
 }
 
 QTEST_MAIN(TestGui)
