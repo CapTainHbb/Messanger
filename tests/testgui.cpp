@@ -7,7 +7,7 @@ class TestGui : public QObject
 {
     Q_OBJECT;
 
-    void send_message();
+    inline void create_send_message_row(QString chat_name, QString messages_text);
 
     void select_chat_by_chat_name(QString chat_name);
 
@@ -23,15 +23,20 @@ private slots:
     void check_send_message_data();
     void check_send_message();
 
+    void check_chat_messages_uniqueness_data();
     void check_chat_messages_uniqueness();
 
 private:
     MainWindow main_window;
+    QStringList chat_names;
 };
 
 void TestGui::initTestCase()
 {
     main_window.init_widgets();
+
+    chat_names.append("1");
+    chat_names.append("2");
 }
 
 
@@ -95,49 +100,86 @@ void TestGui::check_send_message_data()
     QTest::addColumn<QString>("chat_name");
     QTest::addColumn<QTestEventList>("type_message");
     QTest::addColumn<QTestEventList>("click_on_send_message");
-    QTest::addColumn<QString>("results");
+    QTest::addColumn<QString>("message_text");
+    QTest::addColumn<int>("number_of_message_in_active_chat");
+    
+    create_send_message_row(chat_names.at(0), "hi bob!");
+    create_send_message_row(chat_names.at(0), "im alice!");
 
-    QString chat_name_1{ "1" };
-    QTestEventList first_message_keyboard;
-    first_message_keyboard.addKeyClicks("hello world");
-    QTestEventList first_message_mouse_events;
-    first_message_mouse_events.addMouseClick(Qt::MouseButton::LeftButton);
-    QTest::newRow("first message") << chat_name_1 << first_message_keyboard << first_message_mouse_events << "hello world";
-
-    QString chat_name_2{ "2" };
-    QTestEventList second_message_keyboard;
-    second_message_keyboard.addKeyClicks("im hossein");
-    QTestEventList second_message_mouse_events;
-    second_message_mouse_events.addMouseClick(Qt::MouseButton::LeftButton);
-    QTest::newRow("second message") << chat_name_2 << second_message_keyboard << second_message_mouse_events << "im hossein";
+    create_send_message_row(chat_names.at(1), "hi alice!");
+    create_send_message_row(chat_names.at(1), "im bob!");
 }
+
+inline void TestGui::create_send_message_row(QString chat_name, QString message_text)
+{
+    static QString previous_chat_name{ chat_name };
+    static int number_of_messages_in_chat{ 0 };
+    
+    QTestEventList type_message;
+    type_message.addKeyClicks(message_text);
+
+    QTestEventList click_on_send_message;
+    click_on_send_message.addMouseClick(Qt::MouseButton::LeftButton);
+
+    if(chat_name == previous_chat_name)
+    {
+        number_of_messages_in_chat++;
+    }
+    else
+    {
+        previous_chat_name = chat_name;
+        number_of_messages_in_chat = 1;
+    }
+    
+    QString row_name{ chat_name + "_" + message_text };
+    QTest::newRow(row_name.toStdString().c_str()) << chat_name << type_message << click_on_send_message << message_text  << number_of_messages_in_chat;
+}
+
 
 void TestGui::check_send_message()
 {
     QFETCH(QString, chat_name);
     QFETCH(QTestEventList, type_message);
     QFETCH(QTestEventList, click_on_send_message);
-    QFETCH(QString, results);
+    QFETCH(QString, message_text);
+    QFETCH(int, number_of_message_in_active_chat);
 
     select_chat_by_chat_name(chat_name);
     type_message.simulate(main_window.active_chat_widget->send_message_textbox);
     click_on_send_message.simulate(main_window.active_chat_widget->send_message_pushbutton);
 
-    QCOMPARE(main_window.active_chat_widget->get_number_of_messages_in_active_chat(), 1);
-    QCOMPARE(main_window.active_chat_widget->get_last_message_on_active_chat()->text(), results);
+    QCOMPARE(main_window.active_chat_widget->get_number_of_messages_in_active_chat(), number_of_message_in_active_chat);
+    QCOMPARE(main_window.active_chat_widget->get_last_message_on_active_chat()->text(), message_text);
+}
+
+
+
+void TestGui::check_chat_messages_uniqueness_data()
+{
+    QTest::addColumn<QString>("first_chat_name");
+    QTest::addColumn<QString>("second_chat_name");
+    QTest::addColumn<int>("number_of_messages_to_compare");
+
+    QTest::newRow("first_row") << chat_names.at(0) << chat_names.at(1) << 2;
 }
 
 void TestGui::check_chat_messages_uniqueness()
 {
-    QString first_chat_message{ };
-    select_chat_by_chat_name("1");
-    first_chat_message = main_window.active_chat_widget->get_last_message_on_active_chat()->text();
-    QCOMPARE(first_chat_message, "hello world");
+    QFETCH(QString, first_chat_name);
+    QFETCH(QString, second_chat_name);
+    QFETCH(int, number_of_messages_to_compare);
 
-    QString second_chat_message{ };
-    select_chat_by_chat_name("2");
-    second_chat_message = main_window.active_chat_widget->get_last_message_on_active_chat()->text();
-    QCOMPARE(second_chat_message, "im hossein");
+    select_chat_by_chat_name(first_chat_name);
+    auto first_chat_messages_text = main_window.active_chat_widget->get_active_chat_messages_text();
+
+    select_chat_by_chat_name(second_chat_name);
+    auto second_chat_messages_text = main_window.active_chat_widget->get_active_chat_messages_text();
+
+    for(size_t i = 0; i < number_of_messages_to_compare; i++)
+    {
+        QVERIFY(first_chat_messages_text.at(i) != second_chat_messages_text.at(i));
+    }
+
 }
 
 QTEST_MAIN(TestGui)

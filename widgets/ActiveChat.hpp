@@ -35,9 +35,13 @@ public:
     void init_send_message_button();
 
     QListWidgetItem *active_chat{ nullptr };
+    QListWidgetItem *get_active_chat() const;
     void set_active_chat(QListWidgetItem *active_chat);
 
+
     QString get_active_chat_name() const;    
+    QStringList get_active_chat_messages_text() const;
+    QList<QLabel*> get_active_chat_messages() const;
 
 public slots:
     void on_send_message_clicked();

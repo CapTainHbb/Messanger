@@ -80,14 +80,34 @@ QLabel *ActiveChat::get_last_message_on_active_chat() const
 
 size_t ActiveChat::get_number_of_messages_in_active_chat() const
 {
-    auto chat_messages{ active_chat->data(Qt::ItemDataRole::UserRole).value<QList<QLabel*>>() };
-
-    return chat_messages.count();
+    return get_active_chat_messages().count();
 }
 
 QString ActiveChat::get_active_chat_name() const
 {
     return active_chat->text();
+}
+
+QStringList ActiveChat::get_active_chat_messages_text() const
+{
+    QStringList chat_messages_text;
+
+    for(auto& chat_message_text : get_active_chat_messages())
+    {
+        chat_messages_text.append(chat_message_text->text());
+    }
+
+    return chat_messages_text;
+}
+
+QList<QLabel*>  ActiveChat::get_active_chat_messages() const
+{
+    return active_chat->data(Qt::ItemDataRole::UserRole).value<QList<QLabel*>>();
+}
+
+QListWidgetItem *ActiveChat::get_active_chat() const
+{
+    return active_chat;
 }
 
 void ActiveChat::set_active_chat(QListWidgetItem *_active_chat)
