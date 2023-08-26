@@ -51,10 +51,12 @@ void LeftDrawer::on_new_chat_clicked()
     QString chat_name{ QString::number(chat_count) };
 
     QListWidgetItem *new_chat_item{ new QListWidgetItem(chat_name, list_of_chats) };
-    QVariant chat_messages(QList<QLabel*>());
+    QVariant chat_messages(QList<QString>());
     new_chat_item->setData(Qt::ItemDataRole::UserRole, chat_messages);
 
     active_chat_widget->set_active_chat(new_chat_item);
+
+    new_chat_item->setSelected(true);
 }
 
 size_t LeftDrawer::get_number_of_all_chats() const

@@ -14,6 +14,8 @@ class TestGui : public QObject
 private slots:
     void initTestCase();
 
+    void empty_active_chat();
+
     void create_new_chat_data();
     void create_new_chat();
 
@@ -40,6 +42,12 @@ void TestGui::initTestCase()
 }
 
 
+void TestGui::empty_active_chat()
+{
+    QVERIFY(main_window.active_chat_widget->send_message_textbox->isHidden());
+    QVERIFY(main_window.active_chat_widget->send_message_pushbutton->isHidden());
+}
+
 void TestGui::create_new_chat_data()
 {
     QTest::addColumn<QTestEventList>("click_add_new_chat_button");
@@ -65,6 +73,9 @@ void TestGui::create_new_chat()
     QCOMPARE(main_window.left_drawer_widget->get_number_of_all_chats(), number_of_all_chats);
     QCOMPARE(main_window.active_chat_widget->get_number_of_messages_in_active_chat() , number_of_messages_in_active_chat);
     QCOMPARE(main_window.active_chat_widget->get_active_chat_name(), active_chat_name);
+
+    QVERIFY(main_window.active_chat_widget->send_message_textbox->isHidden() != true);
+    QVERIFY(main_window.active_chat_widget->send_message_pushbutton->isHidden() != true);
 }
 
 
@@ -135,7 +146,6 @@ inline void TestGui::create_send_message_row(QString chat_name, QString message_
     QTest::newRow(row_name.toStdString().c_str()) << chat_name << type_message << click_on_send_message << message_text  << number_of_messages_in_chat;
 }
 
-
 void TestGui::check_send_message()
 {
     QFETCH(QString, chat_name);
@@ -149,9 +159,8 @@ void TestGui::check_send_message()
     click_on_send_message.simulate(main_window.active_chat_widget->send_message_pushbutton);
 
     QCOMPARE(main_window.active_chat_widget->get_number_of_messages_in_active_chat(), number_of_message_in_active_chat);
-    QCOMPARE(main_window.active_chat_widget->get_last_message_on_active_chat()->text(), message_text);
+    QCOMPARE(main_window.active_chat_widget->get_last_message_on_active_chat(), message_text);
 }
-
 
 
 void TestGui::check_chat_messages_uniqueness_data()
@@ -181,6 +190,7 @@ void TestGui::check_chat_messages_uniqueness()
     }
 
 }
+
 
 QTEST_MAIN(TestGui)
 #include "testgui.moc"
