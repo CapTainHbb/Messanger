@@ -14,7 +14,7 @@ class TestGui : public QObject
 private slots:
     void initTestCase();
 
-    void empty_active_chat();
+    void initially_hidden_active_chat();
 
     void create_new_chat_data();
     void create_new_chat();
@@ -42,7 +42,7 @@ void TestGui::initTestCase()
 }
 
 
-void TestGui::empty_active_chat()
+void TestGui::initially_hidden_active_chat()
 {
     QVERIFY(main_window.active_chat_widget->send_message_textbox->isHidden());
     QVERIFY(main_window.active_chat_widget->send_message_pushbutton->isHidden());
