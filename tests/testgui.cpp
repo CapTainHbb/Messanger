@@ -10,6 +10,8 @@ class TestGui : public QObject
     inline void create_send_message_row(QString chat_name, QString messages_text);
 
     void select_chat_by_chat_name(QString chat_name);
+    void right_click_on_chat_by_chat_name(QString chat_name);
+    void left_click_on_delete_chat();
 
 private slots:
     void initTestCase();
@@ -28,6 +30,9 @@ private slots:
     void check_chat_messages_uniqueness_data();
     void check_chat_messages_uniqueness();
 
+    void delete_chat_data();
+    void delete_chat();
+
 private:
     MainWindow main_window;
     QStringList chat_names;
@@ -44,6 +49,7 @@ void TestGui::initTestCase()
 
 void TestGui::initially_hidden_active_chat()
 {
+    QVERIFY(main_window.active_chat_widget->active_chat_messages_frame->isHidden());
     QVERIFY(main_window.active_chat_widget->send_message_textbox->isHidden());
     QVERIFY(main_window.active_chat_widget->send_message_pushbutton->isHidden());
 }
@@ -74,6 +80,7 @@ void TestGui::create_new_chat()
     QCOMPARE(main_window.active_chat_widget->get_number_of_messages_in_active_chat() , number_of_messages_in_active_chat);
     QCOMPARE(main_window.active_chat_widget->get_active_chat_name(), active_chat_name);
 
+    QVERIFY(main_window.active_chat_widget->active_chat_messages_frame->isHidden() != true);
     QVERIFY(main_window.active_chat_widget->send_message_textbox->isHidden() != true);
     QVERIFY(main_window.active_chat_widget->send_message_pushbutton->isHidden() != true);
 }
@@ -99,8 +106,7 @@ void TestGui::select_chat()
 
 void TestGui::select_chat_by_chat_name(QString chat_name)
 {
-    auto chat_item{ main_window.left_drawer_widget->find_chat_item(chat_name) };
-    auto rect{ main_window.left_drawer_widget->get_chat_item_rect(chat_item) };
+    auto rect{ main_window.left_drawer_widget->get_chat_item_rect_by_name(chat_name) };
 
     QTest::mouseClick(main_window.left_drawer_widget->list_of_chats->viewport(), Qt::LeftButton, 0, rect.center());
 }
@@ -191,6 +197,58 @@ void TestGui::check_chat_messages_uniqueness()
 
 }
 
+
+void TestGui::delete_chat_data()
+{
+    QTest::addColumn<QString>("chat_name");
+    
+    QTest::newRow(chat_names.at(0).toStdString().c_str()) << chat_names.at(0);
+    QTest::newRow(chat_names.at(1).toStdString().c_str()) << chat_names.at(1);
+}
+
+void TestGui::delete_chat()
+{
+    QFETCH(QString, chat_name);
+
+    auto deleted_chat{ main_window.left_drawer_widget->find_chat_item_by_name(chat_name) };
+
+    right_click_on_chat_by_chat_name(chat_name);
+    left_click_on_delete_chat();
+
+    QListWidgetItem *item { nullptr };
+    try
+    {
+        item = main_window.left_drawer_widget->find_chat_item_by_name(chat_name);
+    }
+    catch(const std::invalid_argument& e)
+    {
+        // expected exception
+    }
+
+    QVERIFY(nullptr == item);
+    QVERIFY(main_window.active_chat_widget->active_chat != deleted_chat);
+
+    if(0 == main_window.left_drawer_widget->get_number_of_all_chats())
+    {
+        QVERIFY(nullptr == main_window.active_chat_widget->get_active_chat());
+        QVERIFY(true == main_window.active_chat_widget->isHidden());
+        return;
+    }
+
+    auto first_chat_item{ main_window.left_drawer_widget->get_first_chat_item() };
+    QVERIFY(first_chat_item == main_window.active_chat_widget->active_chat);
+}
+
+void TestGui::right_click_on_chat_by_chat_name(QString chat_name)
+{
+    auto rect{ main_window.left_drawer_widget->get_chat_item_rect_by_name(chat_name) };
+    QTest::mouseClick(main_window.left_drawer_widget->list_of_chats->viewport(), Qt::RightButton, 0, rect.center());
+}
+
+void TestGui::left_click_on_delete_chat()
+{
+    main_window.left_drawer_widget->delete_chat->trigger();
+}
 
 QTEST_MAIN(TestGui)
 #include "testgui.moc"

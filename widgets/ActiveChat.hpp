@@ -47,7 +47,7 @@ public:
     QString get_active_chat_name() const;    
     QList<QString> get_active_chat_messages_text() const;
 
-    void clearLayout(QLayout *layout);
+    void clear_layout(QLayout *layout);
 
 public slots:
     void on_send_message_clicked();

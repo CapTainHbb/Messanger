@@ -24,14 +24,44 @@ void LeftDrawer::init_list_of_chats()
 {
     list_of_chats = new QListWidget(this);
     list_of_chats->setObjectName("list_of_chats");
+    list_of_chats->setContextMenuPolicy(Qt::ActionsContextMenu);
+
+    delete_chat = new QAction("delete chat", this);
+    connect(delete_chat, &QAction::triggered, this, &LeftDrawer::on_delete_chat_clicked);
+    list_of_chats->addAction(delete_chat);
+
     left_drawer_vbox->addWidget(list_of_chats);
     connect(list_of_chats, &QListWidget::itemClicked,
             this, &LeftDrawer::on_chat_item_clicked);
 }
 
-void LeftDrawer::on_chat_item_clicked(QListWidgetItem* item)
+void LeftDrawer::on_delete_chat_clicked(bool checked)
+{
+    delete_chat_item(list_of_chats->currentItem());
+
+    if(0 == list_of_chats->count())
+    {
+        active_chat_widget->set_active_chat(nullptr);
+        return;
+    }
+
+    get_first_chat_item()->setSelected(true);
+    active_chat_widget->set_active_chat(get_first_chat_item());
+}
+
+void LeftDrawer::delete_chat_item(QListWidgetItem *item)
+{
+    list_of_chats->takeItem(list_of_chats->row(item));
+}
+
+void LeftDrawer::on_chat_item_clicked(QListWidgetItem *item)
 {
     active_chat_widget->set_active_chat(item);
+}
+
+QListWidgetItem *LeftDrawer::get_first_chat_item()
+{
+    return list_of_chats->itemAt(0, 0);
 }
 
 void LeftDrawer::init_new_chat_button()
@@ -64,7 +94,15 @@ size_t LeftDrawer::get_number_of_all_chats() const
     return list_of_chats->count();
 }
 
-QListWidgetItem* LeftDrawer::find_chat_item(QString chat_name)
+
+QRect LeftDrawer::get_chat_item_rect_by_name(QString chat_name)
+{
+    auto chat_item{ find_chat_item_by_name(chat_name) };
+    auto rect{ get_chat_item_rect(chat_item) };
+    return rect;
+} 
+
+QListWidgetItem* LeftDrawer::find_chat_item_by_name(QString chat_name)
 {
     auto found_chats{ list_of_chats->findItems(chat_name, Qt::MatchExactly) };
 
@@ -74,7 +112,6 @@ QListWidgetItem* LeftDrawer::find_chat_item(QString chat_name)
     }
 
     return found_chats.at(0);
-    
 }
 
 QRect LeftDrawer::get_chat_item_rect(QListWidgetItem *item)

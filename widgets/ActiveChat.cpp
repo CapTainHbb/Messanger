@@ -23,6 +23,7 @@ void ActiveChat::init_active_chat_messages()
     active_chat_messages_frame = new QFrame(this);
     active_chat_messages_frame->setObjectName("active_chat_messages_frame");
     active_chat_messages_frame->setFrameStyle(QFrame::Box | QFrame::Plain);
+    active_chat_messages_frame->setHidden(true);
 
     active_chat_messages_vbox = new QVBoxLayout(active_chat_messages_frame);
     active_chat_messages_vbox->setObjectName("active_chat_messages_vbox");
@@ -116,8 +117,16 @@ QListWidgetItem *ActiveChat::get_active_chat() const
 void ActiveChat::set_active_chat(QListWidgetItem *_active_chat)
 {
     active_chat = _active_chat;
+    if(nullptr == active_chat)
+    {
+        this->hide();
+        return;
+    }   
+
+    this->show();
     clear_active_chat_messages_layout();
     reconstruct_active_chat_messages_layout();
+    active_chat_messages_frame->setHidden(false);
     send_message_textbox->setHidden(false);
     send_message_pushbutton->setHidden(false);
 }
@@ -125,16 +134,16 @@ void ActiveChat::set_active_chat(QListWidgetItem *_active_chat)
 
 void ActiveChat::clear_active_chat_messages_layout()
 {
-    clearLayout(active_chat_messages_vbox);
+    clear_layout(active_chat_messages_vbox);
 }
 
-void ActiveChat::clearLayout(QLayout *layout) {
+void ActiveChat::clear_layout(QLayout *layout) {
     if (layout == NULL)
         return;
     QLayoutItem *item;
     while((item = layout->takeAt(0))) {
         if (item->layout()) {
-            clearLayout(item->layout());
+            clear_layout(item->layout());
             delete item->layout();
         }        
         if (item->widget())
