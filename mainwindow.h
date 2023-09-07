@@ -12,7 +12,12 @@
 
 #include <iostream>
 
+#include <GeneralModel.hpp>
+#include <ContactProxyModel.hpp>
+#include <ActiveChatProxyModel.hpp>
+#include <ChatListProxyModel.hpp>
 #include <LeftDrawer.hpp>
+#include <MiddleStack.hpp>
 #include <ActiveChat.hpp>
 
 QT_BEGIN_NAMESPACE
@@ -27,6 +32,11 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    GeneralModel *general_model{ nullptr };
+    ContactProxyModel *contact_proxy_model{ nullptr };
+    ChatListProxyModel *chat_list_proxy_model{ nullptr };
+    void init_models();
+
     void init_widgets();
 
     QWidget *top_most_widget{ nullptr };
@@ -34,11 +44,22 @@ public:
     void init_top_most_widget();
 
     LeftDrawer *left_drawer_widget{ nullptr };
-    ActiveChat *active_chat_widget{ nullptr };
-
-    void init_active_chat_widget();
     void init_left_drawer_widget();
-    void align_layout();    
+
+    MiddleStack *middle_stack_widget{ nullptr };
+    void init_middle_stack_widget();
+
+    ActiveChat *active_chat_widget{ nullptr };
+    void init_active_chat_widget();
+
+    void connect_signals_to_slots();
+
+    void align_layout(); 
+
+    void set_all_widgets_initial_visibility();   
+
+public slots:
+    void on_contact_item_selected(const Contact &contact);
 
 private:
     Ui::MainWindow *ui;

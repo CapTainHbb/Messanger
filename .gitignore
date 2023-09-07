@@ -3,3 +3,8 @@ build/
 CMakeFiles/
 CMakeLists.txt.user
 CMakeCache.txt
+*.vcxproj
+*.filters
+*.tcl
+*.sln
+*.cmake

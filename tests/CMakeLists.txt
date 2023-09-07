@@ -1,13 +1,36 @@
 cmake_minimum_required(VERSION 3.5)
 
+add_subdirectory(model)
+add_subdirectory(gui)
 
-include_directories(../)
+enable_testing()
 
-add_executable(testgui testgui.cpp ../mainwindow.cpp ../widgets/LeftDrawer.cpp ../widgets/ActiveChat.cpp)
+add_test(
+  NAME TestChatListProxyModel
+  COMMAND $<TARGET_FILE:TestChatListProxyModel>
+)
 
-target_link_libraries(testgui PRIVATE
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Test
-    Qt5::Widgets
+add_test(
+  NAME InitialWidgetsVisibility
+  COMMAND $<TARGET_FILE:InitialWidgetsVisibility>
+)
+
+add_test(
+  NAME StartNewChat
+  COMMAND $<TARGET_FILE:StartNewChat>
+)
+
+add_test(
+  NAME SelectExistingChat
+  COMMAND $<TARGET_FILE:SelectExistingChat>
+)
+
+add_test(
+  NAME SendNewMessageInExistingChat
+  COMMAND $<TARGET_FILE:SendNewMessageInExistingChat>
+)
+
+add_test(
+  NAME DeleteChat
+  COMMAND $<TARGET_FILE:DeleteChat>
 )

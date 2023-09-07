@@ -1,14 +1,15 @@
 #include "ActiveChat.hpp"
 
-ActiveChat::ActiveChat(QWidget *parent)
+ActiveChat::ActiveChat(GeneralModel *_model, QWidget *parent)
+ :model{ _model }
 {
     setParent(parent);
     setObjectName("active_chat_widget");
 
-    active_chat_vbox = new QVBoxLayout(this);
-    active_chat_vbox->setObjectName("active_chat_vbox");
+    vbox = new QVBoxLayout(this);
+    vbox->setObjectName("vbox");
 
-    init_active_chat_messages();
+    init_chat_messages();
     init_send_message_textbox();
     init_send_message_button();
 }
@@ -18,17 +19,37 @@ ActiveChat::~ActiveChat()
 }
 
 
-void ActiveChat::init_active_chat_messages()
+void ActiveChat::on_contact_item_selected(const Contact &contact)
 {
-    active_chat_messages_frame = new QFrame(this);
-    active_chat_messages_frame->setObjectName("active_chat_messages_frame");
-    active_chat_messages_frame->setFrameStyle(QFrame::Box | QFrame::Plain);
-    active_chat_messages_frame->setHidden(true);
+    reinit(contact);
+}
 
-    active_chat_messages_vbox = new QVBoxLayout(active_chat_messages_frame);
-    active_chat_messages_vbox->setObjectName("active_chat_messages_vbox");
+void ActiveChat::on_chat_item_clicked(const QModelIndex& model_index)
+{
+    reinit(model->get_contact(model_index));
+}
 
-    active_chat_vbox->addWidget(active_chat_messages_frame);
+void ActiveChat::on_chat_item_deleted(const QModelIndex& model_index)
+{
+    auto updated_contact{ model->get_contact(model_index) };
+    if(updated_contact != active_contact)
+    {
+        return;
+    }
+    set_chat_status(Status::EMPTY_CHAT);
+}
+
+void ActiveChat::init_chat_messages()
+{
+    chat_messages_frame = new QFrame(this);
+    chat_messages_frame->setObjectName("chat_messages_frame");
+    chat_messages_frame->setFrameStyle(QFrame::Box | QFrame::Plain);
+    chat_messages_frame->setHidden(false);
+
+    chat_messages_vbox = new QVBoxLayout(chat_messages_frame);
+    chat_messages_vbox->setObjectName("chat_messages_vbox");
+
+    vbox->addWidget(chat_messages_frame);
 }
 
 void ActiveChat::init_send_message_textbox()
@@ -37,7 +58,7 @@ void ActiveChat::init_send_message_textbox()
     send_message_textbox->setObjectName("send_message_textbox");
     send_message_textbox->setHidden(true);
 
-    active_chat_vbox->addWidget(send_message_textbox);
+    vbox->addWidget(send_message_textbox);
 }
 
 void ActiveChat::init_send_message_button()
@@ -46,7 +67,7 @@ void ActiveChat::init_send_message_button()
     send_message_pushbutton->setObjectName("send_message_pushbutton");
     send_message_pushbutton->setText("send message");
     send_message_pushbutton->setHidden(true);
-    active_chat_vbox->addWidget(send_message_pushbutton);
+    vbox->addWidget(send_message_pushbutton);
 
     connect(send_message_pushbutton, &QPushButton::clicked, this, &ActiveChat::on_send_message_clicked);
 }
@@ -56,85 +77,72 @@ void ActiveChat::on_send_message_clicked()
     QString message_text{ send_message_textbox->toPlainText() };
     
     create_chat_message_widget(message_text);
-    add_message_to_active_chat_model(message_text);
+
+    active_contact.add_chat(message_text);
+    model->update_contact(active_contact);
 
     send_message_textbox->clear();
-}
-
-void ActiveChat::add_message_to_active_chat_model(QString message_text)
-{
-    QString new_message_text{ message_text };
-    auto current_messages{ active_chat->data(Qt::ItemDataRole::UserRole).value<QList<QString>>() };
-    current_messages.append(new_message_text);
-
-    QVariant new_chat_messages;
-    new_chat_messages.setValue(current_messages);
-    
-    active_chat->setData(Qt::ItemDataRole::UserRole, new_chat_messages);
 }
 
 void ActiveChat::create_chat_message_widget(QString message_text)
 {
     QLabel *message_qlabel{ nullptr };
-    message_qlabel = new QLabel(active_chat_messages_frame);
+    message_qlabel = new QLabel(chat_messages_frame);
     message_qlabel->setText(message_text);
-    active_chat_messages_vbox->addWidget(message_qlabel);
+    messages.append(message_qlabel);
+    chat_messages_vbox->addWidget(message_qlabel);
 }
 
-QString ActiveChat::get_last_message_on_active_chat() const 
+
+QString ActiveChat::get_chat_name() const
 {
-    if(nullptr == active_chat)
+    return active_contact.get_name();
+}
+
+QList<QString> ActiveChat::get_chat_messages_text() const
+{
+    QList<QString> chat_messages_text;
+    for (const auto message_widget : messages)
     {
-        throw std::invalid_argument("active chat is nullptr");
+        chat_messages_text.append(message_widget->text());
+    }
+    return chat_messages_text;
+}
+
+QString ActiveChat::get_last_message() const
+{
+    auto number_of_messages_in_active_chat{ get_number_of_messages() };
+    if(0 == number_of_messages_in_active_chat)
+    {
+        return "";
     }
 
-    auto messages{  active_chat->data(Qt::ItemDataRole::UserRole).value<QList<QString>>() };
-    return messages.last();
+    return messages.last()->text();
+}
+
+size_t ActiveChat::get_number_of_messages() const
+{
+    return messages.count();
 }
 
 
-size_t ActiveChat::get_number_of_messages_in_active_chat() const
+void ActiveChat::reinit(const Contact &contact)
 {
-    return get_active_chat_messages_text().count();
+    set_active_contact(contact);
+    clear_chat_messages_layout();
+    fill_chat_messages_layout();
+    set_chat_status(Status::CHAT_WITH_MESSAGES);
 }
 
-QString ActiveChat::get_active_chat_name() const
+void ActiveChat::set_active_contact(const Contact &contact)
 {
-    return active_chat->text();
+    active_contact = contact;
 }
 
-QList<QString>  ActiveChat::get_active_chat_messages_text() const
+void ActiveChat::clear_chat_messages_layout()
 {
-    return active_chat->data(Qt::ItemDataRole::UserRole).value<QList<QString>>();
-}
-
-
-QListWidgetItem *ActiveChat::get_active_chat() const
-{
-    return active_chat;
-}
-
-void ActiveChat::set_active_chat(QListWidgetItem *_active_chat)
-{
-    active_chat = _active_chat;
-    if(nullptr == active_chat)
-    {
-        this->hide();
-        return;
-    }   
-
-    this->show();
-    clear_active_chat_messages_layout();
-    reconstruct_active_chat_messages_layout();
-    active_chat_messages_frame->setHidden(false);
-    send_message_textbox->setHidden(false);
-    send_message_pushbutton->setHidden(false);
-}
-
-
-void ActiveChat::clear_active_chat_messages_layout()
-{
-    clear_layout(active_chat_messages_vbox);
+    clear_layout(chat_messages_vbox);
+    messages.clear();
 }
 
 void ActiveChat::clear_layout(QLayout *layout) {
@@ -153,11 +161,46 @@ void ActiveChat::clear_layout(QLayout *layout) {
     }
 }
 
-void ActiveChat::reconstruct_active_chat_messages_layout()
+void ActiveChat::fill_chat_messages_layout()
 {
-    auto active_chat_messages_text{ active_chat->data(Qt::ItemDataRole::UserRole).value<QList<QString>>() };
-    for(auto& chat_message_text : active_chat_messages_text)
+    for(auto& chat : active_contact.get_chats())
     {
-        create_chat_message_widget(chat_message_text);
+        create_chat_message_widget(chat.get_chat_text());
     }
+}
+
+
+
+void ActiveChat::set_chat_status(Status new_status)
+{   
+    status = new_status;
+
+    switch (status)
+    {
+    case Status::START_NEW_CHAT:
+    case Status::CHAT_WITH_MESSAGES:
+    {
+        chat_messages_frame->setHidden(false);
+        send_message_pushbutton->setHidden(false);
+        send_message_textbox->setHidden(false);
+        break;
+    }
+    case Status::EMPTY_CHAT:
+    {
+        set_active_contact(Contact());
+        clear_chat_messages_layout();
+        chat_messages_frame->setHidden(false);
+        send_message_pushbutton->setHidden(true);
+        send_message_textbox->setHidden(true);
+        break;
+    }
+    default:
+        break;
+    }
+    
+}
+
+ActiveChat::Status ActiveChat::get_chat_status() const
+{
+    return status;
 }
