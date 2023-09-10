@@ -7,6 +7,7 @@ chat_list_proxy_model{ _chat_list_proxy_model }
 {
     init_chat_list_widget();
     init_contact_list_widget();
+    init_settings_widget();
     init_signal_slots();
     setCurrentIndex(0);
 }
@@ -24,9 +25,15 @@ void MiddleStack::init_chat_list_widget()
 void MiddleStack::init_contact_list_widget()
 {
     contact_list_widget = new ContactListWidget(contact_proxy_model, this);
-
     this->addWidget(contact_list_widget);
 }
+
+void MiddleStack::init_settings_widget()
+{
+    settings_widget = new SettingsWidget(this);
+    this->addWidget(settings_widget);
+}
+
 
 void MiddleStack::init_signal_slots()
 {

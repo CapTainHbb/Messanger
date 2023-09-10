@@ -11,8 +11,13 @@ add_test(
 )
 
 add_test(
-  NAME InitialWidgetsVisibility
-  COMMAND $<TARGET_FILE:InitialWidgetsVisibility>
+  NAME InitialWidgetsStatus
+  COMMAND $<TARGET_FILE:InitialWidgetsStatus>
+)
+
+add_test(
+  NAME ClickOnLeftDrawerButtons
+  COMMAND $<TARGET_FILE:ClickOnLeftDrawerButtons> 
 )
 
 add_test(

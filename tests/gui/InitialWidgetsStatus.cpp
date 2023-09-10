@@ -1,6 +1,6 @@
 #include <TestGuiBase.hpp>
 
-class InitialWidgetsVisibility : public TestGuiBase
+class InitialWidgetsStatus : public TestGuiBase
 {
     Q_OBJECT
 
@@ -9,13 +9,15 @@ private slots:
     void initTestCase() override;
 
     void widgets_visibility();
+
+    void widgets_checkablity();
 };
 
-void InitialWidgetsVisibility::initTestCase()
+void InitialWidgetsStatus::initTestCase()
 {
 }
 
-void InitialWidgetsVisibility::widgets_visibility()
+void InitialWidgetsStatus::widgets_visibility()
 {
     QVERIFY(get_left_drawer_widget()->isHidden() == false);
 
@@ -27,8 +29,14 @@ void InitialWidgetsVisibility::widgets_visibility()
     QVERIFY(get_active_chat_widget()->chat_messages_frame->isHidden() == false);
     QVERIFY(get_active_chat_widget()->send_message_pushbutton->isHidden() == true);
     QVERIFY(get_active_chat_widget()->send_message_textbox->isHidden() == true);
-
 }
 
-QTEST_MAIN(InitialWidgetsVisibility)
-#include "InitialWidgetsVisibility.moc"
+void InitialWidgetsStatus::widgets_checkablity()
+{
+    QVERIFY(get_left_drawer_widget()->chat_list_button->isChecked() == true);
+    QVERIFY(get_left_drawer_widget()->contact_list_button->isChecked() == false);
+    QVERIFY(get_left_drawer_widget()->settings_button->isChecked() == false);
+}
+
+QTEST_MAIN(InitialWidgetsStatus)
+#include "InitialWidgetsStatus.moc"

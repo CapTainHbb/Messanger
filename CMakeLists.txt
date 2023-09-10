@@ -35,6 +35,7 @@ set(PROJECT_SOURCES
         widgets/MiddleStack.cpp
         widgets/ContactListWidget.cpp
         widgets/ChatListWidget.cpp
+        widgets/SettingsWidget.cpp
 )
 
 add_executable(Messanger ${PROJECT_SOURCES})

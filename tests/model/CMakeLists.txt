@@ -16,6 +16,7 @@ set(SOURCE_FILES
     ${PROJECT_SOURCE_DIR}/widgets/MiddleStack.cpp
     ${PROJECT_SOURCE_DIR}/widgets/ContactListWidget.cpp
     ${PROJECT_SOURCE_DIR}/widgets/ChatListWidget.cpp
+    ${PROJECT_SOURCE_DIR}/widgets/SettingsWidget.cpp
     ${PROJECT_SOURCE_DIR}/model/Contact.hpp
     ${PROJECT_SOURCE_DIR}/model/Contact.cpp
     ${PROJECT_SOURCE_DIR}/model/Chat.hpp

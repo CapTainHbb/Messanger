@@ -11,11 +11,13 @@
 
 #include <ContactListWidget.hpp>
 #include <ChatListWidget.hpp>
+#include <SettingsWidget.hpp>
 
 struct MiddleStackIndex
 {
     #define CHAT_LIST_INDEX       0
     #define CONTACT_LIST_INDEX    1
+    #define SETTINGS_INDEX        2
 };
 
 class MiddleStack : public QStackedWidget
@@ -34,6 +36,9 @@ public:
 
     ChatListWidget *chat_list_widget{ nullptr };
     void init_chat_list_widget();
+
+    SettingsWidget *settings_widget{ nullptr };
+    void init_settings_widget();
 
     void init_signal_slots();
 

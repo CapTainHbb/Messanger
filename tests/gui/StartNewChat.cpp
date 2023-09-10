@@ -70,6 +70,7 @@ void StartNewChat::start_new_chat()
     double_click_on_contact(contact);
 
     QVERIFY(get_left_drawer_widget()->contact_list_button->isChecked() == false);
+    QVERIFY(get_left_drawer_widget()->chat_list_button->isChecked() == true);
     QCOMPARE(get_active_chat_widget()->isHidden(), false);
     QCOMPARE(get_middle_stack_widget()->currentIndex(), CHAT_LIST_INDEX);
     QCOMPARE(get_active_chat_widget()->get_chat_name(), contact.get_name());

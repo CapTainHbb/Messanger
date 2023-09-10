@@ -16,6 +16,7 @@ set(SOURCE_FILES
     ${PROJECT_SOURCE_DIR}/widgets/MiddleStack.cpp
     ${PROJECT_SOURCE_DIR}/widgets/ContactListWidget.cpp
     ${PROJECT_SOURCE_DIR}/widgets/ChatListWidget.cpp
+    ${PROJECT_SOURCE_DIR}/widgets/SettingsWidget.cpp
     ${PROJECT_SOURCE_DIR}/model/Contact.hpp
     ${PROJECT_SOURCE_DIR}/model/Contact.cpp
     ${PROJECT_SOURCE_DIR}/model/Chat.hpp
@@ -33,14 +34,24 @@ set(LOCAL_LINK_LIBRARIES
     model
 )
 
-add_executable(InitialWidgetsVisibility
-    InitialWidgetsVisibility.cpp
+add_executable(InitialWidgetsStatus
+    InitialWidgetsStatus.cpp
     ${SOURCE_FILES}
 )
 
-target_link_libraries(InitialWidgetsVisibility PRIVATE
+target_link_libraries(InitialWidgetsStatus PRIVATE
     ${LOCAL_LINK_LIBRARIES}
 )
+
+add_executable(ClickOnLeftDrawerButtons
+    ClickOnLeftDrawerButtons.cpp
+    ${SOURCE_FILES}
+)
+
+target_link_libraries(ClickOnLeftDrawerButtons PRIVATE
+    ${LOCAL_LINK_LIBRARIES}
+)
+
 
 add_executable(StartNewChat
     StartNewChat.cpp
