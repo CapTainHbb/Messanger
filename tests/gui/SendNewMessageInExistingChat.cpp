@@ -90,7 +90,7 @@ void SendNewMessageInExistingChat::check_chat_uniquness()
         contacts_messages_in_active_chat_widget.push_back(contact_chat_message_in_active_chat_widget);
     }
 
-    QSet<QString> stringSet = QSet<QString>::fromList(contacts_messages_in_active_chat_widget);
+    QSet<QString> stringSet(contacts_messages_in_active_chat_widget.begin(), contacts_messages_in_active_chat_widget.end());
     QVERIFY(stringSet.count() == contacts_messages_in_active_chat_widget.count());
 }
 

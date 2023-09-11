@@ -16,7 +16,7 @@ public:
     QVariant data(const QModelIndex &index, int role = 0) const override;
 
     void delete_index_mapping(const QModelIndex& source_model_index);
-    void add_index_mapping(const QModelIndex& source_index);
+    void add_index_mapping(const QModelIndex& source_index) override;
     void reorder_index_mapping();
 
     QModelIndex get_source_model_index(const Contact& contact) const;

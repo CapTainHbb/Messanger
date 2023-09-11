@@ -24,8 +24,8 @@ void ContactListWidget::init_contact_list()
     contact_list->setModel(model);
     contact_list->setStyleSheet("background-color: bisque");
     
-    connect(contact_list, QListView::doubleClicked,   
-            this, ContactListWidget::on_item_double_clicked);
+    connect(contact_list, &QListView::doubleClicked,
+            this, &ContactListWidget::on_item_double_clicked);
 
     // // moc data
     //  model->source_model->add_contact("alice");

@@ -16,8 +16,8 @@ add_library(model
 )
 
 target_link_libraries(model PRIVATE
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Test
-    Qt5::Widgets
+    Qt6::Core
+    Qt6::Gui
+    Qt6::Test
+    Qt6::Widgets
 )

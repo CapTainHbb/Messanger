@@ -42,9 +42,9 @@ void CheckConnectionToServer::check_connection_to_server()
     type_ip_address.simulate(get_settings_widget()->ip_address_text_input);
 
     // does not work and I dont know why!!
-    // QTestEventList click_on_connect_to_server;
-    // click_on_connect_to_server.addMouseClick(Qt::MouseButton::LeftButton);
-    // click_on_connect_to_server.simulate(get_settings_widget()->connect_to_server_button);
+//    QTestEventList click_on_connect_to_server;
+//    click_on_connect_to_server.addMouseClick(Qt::MouseButton::LeftButton);
+//    click_on_connect_to_server.simulate(get_settings_widget()->connect_to_server_button);
     get_settings_widget()->on_click_connect_to_server_button();
     
     QString connection_result{ ip_address_text + " is reachable" };

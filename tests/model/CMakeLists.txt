@@ -27,10 +27,10 @@ set(SOURCE_FILES
 
 
 set(LOCAL_LINK_LIBRARIES
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Test
-    Qt5::Widgets
+    Qt6::Core
+    Qt6::Gui
+    Qt6::Test
+    Qt6::Widgets
     model
 )
 
@@ -40,9 +40,5 @@ add_executable(TestChatListProxyModel
                 )
 
 target_link_libraries(TestChatListProxyModel PRIVATE
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Test
-    Qt5::Widgets
-    model
+    ${LOCAL_LINK_LIBRARIES}
 )

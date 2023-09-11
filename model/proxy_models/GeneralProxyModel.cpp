@@ -2,7 +2,7 @@
 
 int GeneralProxyModel::rowCount(const QModelIndex &parent) const
 {
-    source_model->rowCount();
+    return source_model->rowCount();
 }
 
 QVariant GeneralProxyModel::data(const QModelIndex &index, int role) const

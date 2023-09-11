@@ -13,14 +13,16 @@ void TestGuiBase::select_chat(const Contact& contact)
 {
     auto rect{ get_chat_list_widget()->get_item_rect(contact) };
 
-    QTest::mouseClick(get_chat_list_widget()->chat_list->viewport(), Qt::LeftButton, 0, rect.center());
+    QTest::mouseClick(get_chat_list_widget()->chat_list->viewport(),
+                      Qt::LeftButton, Qt::KeyboardModifier::NoModifier, rect.center());
 }
 
 
 void TestGuiBase::right_click_on_chat(const Contact& contact)
 {
     auto rect{ get_chat_list_widget()->get_item_rect(contact) };
-    QTest::mouseClick(get_chat_list_widget()->chat_list->viewport(), Qt::RightButton, 0, rect.center());
+    QTest::mouseClick(get_chat_list_widget()->chat_list->viewport(),
+        Qt::RightButton, Qt::KeyboardModifier::NoModifier, rect.center());
 }
 
 void TestGuiBase::left_click_on_delete_chat()

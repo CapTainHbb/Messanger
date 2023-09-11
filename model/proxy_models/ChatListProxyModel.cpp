@@ -3,7 +3,7 @@
 ChatListProxyModel::ChatListProxyModel(GeneralModel *_source_model, QObject *parent)
 : GeneralProxyModel(_source_model, parent)
 {
-    connect(source_model, GeneralModel::dataChanged, this, ChatListProxyModel::source_data_changed);
+    connect(source_model, &GeneralModel::dataChanged, this, &ChatListProxyModel::source_data_changed);
 }
 
 int ChatListProxyModel::rowCount(const QModelIndex &parent) const
