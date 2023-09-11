@@ -4,6 +4,9 @@
 #include <QWidget>
 #include <mainwindow.h>
 #include <iostream>
+#include <chrono>
+#include <thread>
+
 
 class TestBase : public QObject
 {

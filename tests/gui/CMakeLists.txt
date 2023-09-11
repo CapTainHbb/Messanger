@@ -52,6 +52,14 @@ target_link_libraries(ClickOnLeftDrawerButtons PRIVATE
     ${LOCAL_LINK_LIBRARIES}
 )
 
+add_executable(CheckConnectionToServer
+    CheckConnectionToServer.cpp
+    ${SOURCE_FILES}
+    )
+
+target_link_libraries(CheckConnectionToServer PRIVATE
+    ${LOCAL_LINK_LIBRARIES}
+)
 
 add_executable(StartNewChat
     StartNewChat.cpp

@@ -24,6 +24,7 @@ protected:
     LeftDrawer *get_left_drawer_widget() const;
     ActiveChat *get_active_chat_widget() const;
     MiddleStack *get_middle_stack_widget() const;
+    SettingsWidget *get_settings_widget() const;
 
 protected slots:
     virtual void initTestCase() = 0;

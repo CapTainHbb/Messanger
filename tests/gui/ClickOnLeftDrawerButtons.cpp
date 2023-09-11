@@ -1,6 +1,5 @@
 #include <TestGuiBase.hpp>
 
-
 class ClickOnLeftDrawerButtons : public TestGuiBase
 {
     Q_OBJECT

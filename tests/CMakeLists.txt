@@ -21,6 +21,11 @@ add_test(
 )
 
 add_test(
+  NAME CheckConnectionToServer
+  COMMAND $<TARGET_FILE:CheckConnectionToServer> 
+)
+
+add_test(
   NAME StartNewChat
   COMMAND $<TARGET_FILE:StartNewChat>
 )

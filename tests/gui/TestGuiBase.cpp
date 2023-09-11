@@ -53,3 +53,7 @@ MiddleStack *TestGuiBase::get_middle_stack_widget() const
     return main_window.middle_stack_widget;
 }
 
+SettingsWidget *TestGuiBase::get_settings_widget() const
+{
+    return main_window.middle_stack_widget->settings_widget;
+}
