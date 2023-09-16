@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.25)
 
 project(Messanger VERSION 0.1 LANGUAGES CXX)
 
@@ -11,14 +11,21 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets Core Gui Test)
+find_package(QXmpp)
+set(QXMPP_TARGET QXmppQt${QT_VERSION_MAJOR})
+
+if(NOT DEFINED QT_VERSION_MAJOR)
+    find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Network Xml Widgets Test)
+endif()
+message("-- Choosing Qt ${QT_VERSION_MAJOR}")
+find_package(Qt${QT_VERSION_MAJOR} 5.15.0 REQUIRED COMPONENTS Core Network Xml Widgets Test)
 
 include_directories(widgets/)
-
-add_subdirectory(model)
-
 include_directories(model/)
 include_directories(model/proxy_models)
+include_directories(xmpp_services/)
+
+add_subdirectory(model)
 
 set(PROJECT_SOURCES
         main.cpp
@@ -31,10 +38,11 @@ set(PROJECT_SOURCES
         widgets/ContactListWidget.cpp
         widgets/ChatListWidget.cpp
         widgets/SettingsWidget.cpp
+        xmpp_services/XmppClient.cpp
 )
 
 add_executable(Messanger ${PROJECT_SOURCES})
 
-target_link_libraries(Messanger PRIVATE Qt6::Widgets model)
+target_link_libraries(Messanger PRIVATE Qt6::Widgets Qt6::Network model QXmpp::QXmpp ${QXMPP_TARGET})
 
 add_subdirectory(tests)

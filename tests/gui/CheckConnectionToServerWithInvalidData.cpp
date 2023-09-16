@@ -1,8 +1,8 @@
 #include <TestGuiBase.hpp>
 
-class CheckConnectionToServer : public TestGuiBase
+class CheckConnectionToServerWithInvalidData : public TestGuiBase
 {
-    Q_OBJECT
+Q_OBJECT
 
 private slots:
     void initTestCase() override;
@@ -11,26 +11,27 @@ private slots:
     void check_connection_to_server();
 };
 
-void CheckConnectionToServer::initTestCase()
+void CheckConnectionToServerWithInvalidData::initTestCase()
 {
     QTestEventList events;
     events.addMouseClick(Qt::MouseButton::LeftButton);
     events.simulate(get_left_drawer_widget()->settings_button);
 }
 
-void CheckConnectionToServer::check_connection_to_server_data()
+void CheckConnectionToServerWithInvalidData::check_connection_to_server_data()
 {
     QTest::addColumn<QString>("username");
     QTest::addColumn<QString>("password");
     QTest::addColumn<QString>("domain_name");
 
-    QTest::newRow("authentication_data")
-                            << "captainhb"
-                            << "capitanhb12345"
-                            << "127.0.0.1";
+    QTest::newRow("invalid_authentication_data")
+            << "captainhb"
+            << "12345"
+            << "127.0.0.1";
+
 }
 
-void CheckConnectionToServer::check_connection_to_server()
+void CheckConnectionToServerWithInvalidData::check_connection_to_server()
 {
     QFETCH(QString, username);
     QFETCH(QString, password);
@@ -48,9 +49,9 @@ void CheckConnectionToServer::check_connection_to_server()
     }
 
     get_settings_widget()->on_click_connect_to_server_button();
-    QTRY_COMPARE(get_settings_widget()->get_last_connection_result(), QXmppClient::State::ConnectedState);
+    QTRY_COMPARE(get_settings_widget()->get_last_connection_result(), QXmppClient::State::DisconnectedState);
 }
 
 
-QTEST_MAIN(CheckConnectionToServer)
-#include "CheckConnectionToServer.moc"
+QTEST_MAIN(CheckConnectionToServerWithInvalidData)
+#include "CheckConnectionToServerWithInvalidData.moc"

@@ -2,6 +2,7 @@
 
 #include <QTest>
 #include <QWidget>
+#include <QTimer>
 #include <mainwindow.h>
 #include <iostream>
 #include <chrono>

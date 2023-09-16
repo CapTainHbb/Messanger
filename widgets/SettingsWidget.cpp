@@ -4,27 +4,39 @@ SettingsWidget::SettingsWidget(QWidget *parent)
 : QWidget(parent)
 {
     init_layout();
-    init_server_ip_adderss_widget();
+    init_username_widget();
+    init_password_widget();
+    init_domain_name_widget();
     init_connect_to_server_widget();
-    init_connection_result_widget();
-}
-
-SettingsWidget::~SettingsWidget()
-{
+//    init_connection_result_widget();
+    connect_signals_to_slots();
 }
 
 void SettingsWidget::init_layout()
 {
-    vbox = new QVBoxLayout(this);
-    vbox->setObjectName("settings_widget_vbox");
+    layout = new QFormLayout(this);
+    layout->setObjectName("settings_widget_layout");
 }
 
-void SettingsWidget::init_server_ip_adderss_widget()
+void SettingsWidget::init_username_widget()
 {
-    ip_address_text_input = new QLineEdit();
-    ip_address_text_input->setObjectName("ip_address_text_input");
-    ip_address_text_input->setInputMask("000.000.000.000;_");
-    vbox->addWidget(ip_address_text_input);
+    username_text_input = new QLineEdit();
+    username_text_input->setObjectName("username_text_input");
+    layout->addRow("Username", username_text_input);
+}
+
+void SettingsWidget::init_password_widget()
+{
+    password_text_input = new QLineEdit();
+    password_text_input->setObjectName("password_text_input");
+    layout->addRow("Password", password_text_input);
+}
+
+void SettingsWidget::init_domain_name_widget()
+{
+    domain_name_text_input = new QLineEdit();
+    domain_name_text_input->setObjectName("domain_name_text_input");
+    layout->addRow("Domain name", domain_name_text_input);
 }
 
 void SettingsWidget::init_connect_to_server_widget()
@@ -32,7 +44,7 @@ void SettingsWidget::init_connect_to_server_widget()
     connect_to_server_button = new QPushButton(this);
     connect_to_server_button->setObjectName("connect_to_server_button");
     connect_to_server_button->setText("connect to server");
-    vbox->addWidget(connect_to_server_button);
+    layout->addRow(connect_to_server_button);
 
     connect(connect_to_server_button, &QPushButton::clicked,
             this, &SettingsWidget::on_click_connect_to_server_button);
@@ -40,7 +52,9 @@ void SettingsWidget::init_connect_to_server_widget()
 
 void SettingsWidget::on_click_connect_to_server_button()
 {
-    connection_result_label->setText(ip_address_text_input->text() + " is reachable");
+    emit request_to_connect_server(username_text_input->text(),
+                                   password_text_input->text(),
+                                   domain_name_text_input->text());
 }
 
 void SettingsWidget::init_connection_result_widget()
@@ -48,5 +62,26 @@ void SettingsWidget::init_connection_result_widget()
     connection_result_label = new QLabel(this);
     connection_result_label->setObjectName("connection_result_label");
     connection_result_label->setText("No connection at the moment!");
-    vbox->addWidget(connection_result_label);
+    layout->addRow(connection_result_label);
 }
+
+void SettingsWidget::connect_signals_to_slots()
+{
+    connect(this, &SettingsWidget::request_to_connect_server,
+            &xmpp_client, &XmppClient::on_request_to_connect_server);
+
+    connect(&xmpp_client, &XmppClient::connection_result,
+            this, &SettingsWidget::on_connection_result_received);
+}
+
+void SettingsWidget::on_connection_result_received(QXmppClient::State status)
+{
+    last_connection_result = status;
+}
+
+QXmppClient::State SettingsWidget::get_last_connection_result() const
+{
+    return last_connection_result;
+}
+
+

@@ -22,7 +22,12 @@ add_test(
 
 add_test(
   NAME CheckConnectionToServer
-  COMMAND $<TARGET_FILE:CheckConnectionToServer> 
+  COMMAND $<TARGET_FILE:CheckConnectionToServer>
+)
+
+add_test(
+        NAME CheckConnectionToServerWithInvalidData
+        COMMAND $<TARGET_FILE:CheckConnectionToServerWithInvalidData>
 )
 
 add_test(

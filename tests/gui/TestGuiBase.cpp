@@ -30,6 +30,13 @@ void TestGuiBase::left_click_on_delete_chat()
     get_chat_list_widget()->delete_chat->trigger();
 }
 
+void TestGuiBase::fill_text_input(const QString& text, QWidget* widget)
+{
+    QTestEventList type_password;
+    type_password.addKeyClicks(text);
+    type_password.simulate(widget);
+}
+
 ContactListWidget *TestGuiBase::get_contact_list_wiget() const
 {
     return main_window.middle_stack_widget->contact_list_widget;

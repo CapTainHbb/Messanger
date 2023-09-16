@@ -19,6 +19,8 @@ protected:
     void right_click_on_chat(const Contact& contact);
     void left_click_on_delete_chat();
 
+    void fill_text_input(const QString& text, QWidget* widget);
+
     ContactListWidget *get_contact_list_wiget() const;
     ChatListWidget *get_chat_list_widget() const;
     LeftDrawer *get_left_drawer_widget() const;

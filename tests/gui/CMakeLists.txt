@@ -7,6 +7,7 @@ include_directories(
                     ${PROJECT_SOURCE_DIR}
                     ${PROJECT_SOURCE_DIR}/model
                     ${PROJECT_SOURCE_DIR}/tests
+                    ${PROJECT_SOURCE_DIR}/xmpp_services
                 )
 
 set(SOURCE_FILES
@@ -16,6 +17,7 @@ set(SOURCE_FILES
     ${PROJECT_SOURCE_DIR}/widgets/MiddleStack.cpp
     ${PROJECT_SOURCE_DIR}/widgets/ContactListWidget.cpp
     ${PROJECT_SOURCE_DIR}/widgets/ChatListWidget.cpp
+    ${PROJECT_SOURCE_DIR}/xmpp_services/XmppClient.cpp
     ${PROJECT_SOURCE_DIR}/widgets/SettingsWidget.cpp
     ${PROJECT_SOURCE_DIR}/model/Contact.hpp
     ${PROJECT_SOURCE_DIR}/model/Contact.cpp
@@ -25,13 +27,15 @@ set(SOURCE_FILES
     TestGuiBase.cpp)
 
 
-
 set(LOCAL_LINK_LIBRARIES
     Qt6::Core
     Qt6::Gui
     Qt6::Test
     Qt6::Widgets
+    Qt6::Network
     model
+    ${QXMPP_TARGET}
+    QXmpp::QXmpp
 )
 
 add_executable(InitialWidgetsStatus
@@ -59,6 +63,15 @@ add_executable(CheckConnectionToServer
 
 target_link_libraries(CheckConnectionToServer PRIVATE
     ${LOCAL_LINK_LIBRARIES}
+)
+
+add_executable(CheckConnectionToServerWithInvalidData
+        CheckConnectionToServerWithInvalidData.cpp
+        ${SOURCE_FILES}
+)
+
+target_link_libraries(CheckConnectionToServerWithInvalidData PRIVATE
+        ${LOCAL_LINK_LIBRARIES}
 )
 
 add_executable(StartNewChat

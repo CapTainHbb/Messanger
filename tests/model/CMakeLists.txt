@@ -22,6 +22,7 @@ set(SOURCE_FILES
     ${PROJECT_SOURCE_DIR}/model/Chat.hpp
     ${PROJECT_SOURCE_DIR}/model/Chat.cpp
     ${PROJECT_SOURCE_DIR}/tests/TestBase.cpp
+    ${PROJECT_SOURCE_DIR}/xmpp_services/XmppClient.cpp
     TestModelBase.cpp)
 
 
@@ -32,6 +33,8 @@ set(LOCAL_LINK_LIBRARIES
     Qt6::Test
     Qt6::Widgets
     model
+    ${QXMPP_TARGET}
+    QXmpp::QXmpp
 )
 
 add_executable(TestChatListProxyModel
