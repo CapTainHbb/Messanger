@@ -47,7 +47,5 @@ public slots:
 
 private:
     QXmppClient::State last_connection_result{ QXmppClient::State::DisconnectedState };
-
-    XmppClient xmpp_client{ };
 };
 

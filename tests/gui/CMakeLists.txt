@@ -2,42 +2,6 @@ cmake_minimum_required(VERSION 3.5)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-
-include_directories(    
-                    ${PROJECT_SOURCE_DIR}
-                    ${PROJECT_SOURCE_DIR}/model
-                    ${PROJECT_SOURCE_DIR}/tests
-                    ${PROJECT_SOURCE_DIR}/xmpp_services
-                )
-
-set(SOURCE_FILES
-    ${PROJECT_SOURCE_DIR}/mainwindow.cpp
-    ${PROJECT_SOURCE_DIR}/widgets/LeftDrawer.cpp
-    ${PROJECT_SOURCE_DIR}/widgets/ActiveChat.cpp
-    ${PROJECT_SOURCE_DIR}/widgets/MiddleStack.cpp
-    ${PROJECT_SOURCE_DIR}/widgets/ContactListWidget.cpp
-    ${PROJECT_SOURCE_DIR}/widgets/ChatListWidget.cpp
-    ${PROJECT_SOURCE_DIR}/xmpp_services/XmppClient.cpp
-    ${PROJECT_SOURCE_DIR}/widgets/SettingsWidget.cpp
-    ${PROJECT_SOURCE_DIR}/model/Contact.hpp
-    ${PROJECT_SOURCE_DIR}/model/Contact.cpp
-    ${PROJECT_SOURCE_DIR}/model/Chat.hpp
-    ${PROJECT_SOURCE_DIR}/model/Chat.cpp
-    ${PROJECT_SOURCE_DIR}/tests/TestBase.cpp
-    TestGuiBase.cpp)
-
-
-set(LOCAL_LINK_LIBRARIES
-    Qt6::Core
-    Qt6::Gui
-    Qt6::Test
-    Qt6::Widgets
-    Qt6::Network
-    model
-    ${QXMPP_TARGET}
-    QXmpp::QXmpp
-)
-
 add_executable(InitialWidgetsStatus
     InitialWidgetsStatus.cpp
     ${SOURCE_FILES}
@@ -71,6 +35,24 @@ add_executable(CheckConnectionToServerWithInvalidData
 )
 
 target_link_libraries(CheckConnectionToServerWithInvalidData PRIVATE
+        ${LOCAL_LINK_LIBRARIES}
+)
+
+add_executable(FetchContactsFromServer
+        FetchContactsFromServer.cpp
+        ${SOURCE_FILES}
+)
+
+target_link_libraries(FetchContactsFromServer PRIVATE
+        ${LOCAL_LINK_LIBRARIES}
+)
+
+add_executable(AddContact
+        AddContact.cpp
+        ${SOURCE_FILES}
+)
+
+target_link_libraries(AddContact PRIVATE
         ${LOCAL_LINK_LIBRARIES}
 )
 

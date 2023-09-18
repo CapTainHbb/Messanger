@@ -1,11 +1,15 @@
 #include <XmppClient.hpp>
 
-XmppClient::XmppClient()
+XmppClient::XmppClient(QObject *parent) :
+        QXmppClient(parent),
+        roster_manager(findExtension<QXmppRosterManager>())
 {
-    client.logger()->setLoggingType(QXmppLogger::StdoutLogging);
-    connect(&client, &QXmppClient::connected, this, &XmppClient::on_connected_to_server);
-    connect(&client, &QXmppClient::disconnected, this, &XmppClient::on_disconnected_from_server);
-    connect(&client, &QXmppClient::error, this, &XmppClient::on_error_connection_to_server);
+    logger()->setLoggingType(QXmppLogger::StdoutLogging);
+    connect(this, &QXmppClient::connected, this, &XmppClient::on_connected_to_server);
+    connect(this, &QXmppClient::disconnected, this, &XmppClient::on_disconnected_from_server);
+    connect(this, &QXmppClient::error, this, &XmppClient::on_error_connection_to_server);
+    connect(roster_manager, &QXmppRosterManager::itemAdded,
+            this, &XmppClient::on_item_added);
 }
 
 XmppClient::~XmppClient()
@@ -19,27 +23,36 @@ void XmppClient::on_request_to_connect_server(const QString& username,
 {
     QString jid{ username + "@" + domain };
     try {
-        client.connectToServer(jid, password);
-        emit connection_result(QXmppClient::State::ConnectingState);
+        connectToServer(jid, password);
+        emit connection_result(State::ConnectingState);
     }
     catch (...) {
-        emit connection_result(QXmppClient::State::DisconnectedState);
-
+        emit connection_result(State::DisconnectedState);
     }
 }
 
-
 void XmppClient::on_connected_to_server()
 {
-    emit connection_result(QXmppClient::State::ConnectedState);
+    emit connection_result(State::ConnectedState);
 }
 
 void XmppClient::on_disconnected_from_server()
 {
+    emit connection_result(State::DisconnectedState);
+}
+
+void XmppClient::on_error_connection_to_server(Error error)
+{
     emit connection_result(QXmppClient::State::DisconnectedState);
 }
 
-void XmppClient::on_error_connection_to_server(QXmppClient::Error error)
+void XmppClient::on_item_added(const QString &bareJid)
 {
-    emit connection_result(QXmppClient::State::DisconnectedState);
+    qDebug("on_item_added: %s", qPrintable(bareJid));
+}
+
+void XmppClient::on_request_add_contact(const QString& contact_jid)
+{
+    qDebug("on_request_add_contact: %s", qPrintable(contact_jid));
+    roster_manager->addItem(contact_jid);
 }

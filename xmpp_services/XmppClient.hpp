@@ -4,16 +4,20 @@
 #include <QXmppQt6/QXmppClient.h>
 #include <QXmppQt6/QXmppLogger.h>
 #include <QXmppQt6/QXmppMessage.h>
+#include <QXmppQt6/QXmppRosterManager.h>
+#include <QXmppQt6/QXmppTask.h>
 
 #include <iostream>
 #include <stdexcept>
 
-class XmppClient : public QObject
+class QXmppRosterManager;
+
+class XmppClient : public QXmppClient
 {
     Q_OBJECT
 
 public:
-    XmppClient();
+    XmppClient(QObject *parent = nullptr);
     ~XmppClient();
 
 signals:
@@ -28,6 +32,10 @@ public slots:
     void on_disconnected_from_server();
     void on_error_connection_to_server(QXmppClient::Error error);
 
+    void on_item_added(const QString &bareJid);
+
+    void on_request_add_contact(const QString& contact_jid);
+
 private:
-    QXmppClient client;
+    QXmppRosterManager *roster_manager;
 };

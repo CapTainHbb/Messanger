@@ -19,6 +19,7 @@
 #include <LeftDrawer.hpp>
 #include <MiddleStack.hpp>
 #include <ActiveChat.hpp>
+#include <XmppClient.hpp>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -63,6 +64,7 @@ public slots:
 
 private:
     Ui::MainWindow *ui;
+    XmppClient xmpp_client{ };
 
 };
 #endif // MAINWINDOW_H

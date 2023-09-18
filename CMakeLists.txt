@@ -38,6 +38,7 @@ set(PROJECT_SOURCES
         widgets/ContactListWidget.cpp
         widgets/ChatListWidget.cpp
         widgets/SettingsWidget.cpp
+        widgets/AddContactWidget.cpp
         xmpp_services/XmppClient.cpp
 )
 
@@ -46,3 +47,5 @@ add_executable(Messanger ${PROJECT_SOURCES})
 target_link_libraries(Messanger PRIVATE Qt6::Widgets Qt6::Network model QXmpp::QXmpp ${QXMPP_TARGET})
 
 add_subdirectory(tests)
+
+add_subdirectory(xmpp_services)

@@ -67,11 +67,7 @@ void SettingsWidget::init_connection_result_widget()
 
 void SettingsWidget::connect_signals_to_slots()
 {
-    connect(this, &SettingsWidget::request_to_connect_server,
-            &xmpp_client, &XmppClient::on_request_to_connect_server);
 
-    connect(&xmpp_client, &XmppClient::connection_result,
-            this, &SettingsWidget::on_connection_result_received);
 }
 
 void SettingsWidget::on_connection_result_received(QXmppClient::State status)

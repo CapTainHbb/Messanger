@@ -82,6 +82,15 @@ void MainWindow::connect_signals_to_slots()
 
     connect(middle_stack_widget->chat_list_widget, &ChatListWidget::chat_item_deleted, 
             active_chat_widget, &ActiveChat::on_chat_item_deleted);
+
+    connect(middle_stack_widget->settings_widget, &SettingsWidget::request_to_connect_server,
+            &xmpp_client, &XmppClient::on_request_to_connect_server);
+
+    connect(&xmpp_client, &XmppClient::connection_result,
+            middle_stack_widget->settings_widget, &SettingsWidget::on_connection_result_received);
+
+    connect(middle_stack_widget->add_contact_widget, &AddContactWidget::request_add_contact,
+        &xmpp_client, &XmppClient::on_request_add_contact);
 }
 
 void MainWindow::on_contact_item_selected(const Contact &index)

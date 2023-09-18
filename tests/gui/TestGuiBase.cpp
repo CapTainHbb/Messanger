@@ -36,33 +36,3 @@ void TestGuiBase::fill_text_input(const QString& text, QWidget* widget)
     type_password.addKeyClicks(text);
     type_password.simulate(widget);
 }
-
-ContactListWidget *TestGuiBase::get_contact_list_wiget() const
-{
-    return main_window.middle_stack_widget->contact_list_widget;
-}
-
-ChatListWidget *TestGuiBase::get_chat_list_widget() const
-{
-    return main_window.middle_stack_widget->chat_list_widget;
-}
-
-LeftDrawer *TestGuiBase::get_left_drawer_widget() const
-{
-    return main_window.left_drawer_widget;
-}
-
-ActiveChat *TestGuiBase::get_active_chat_widget() const
-{
-    return main_window.active_chat_widget;
-}
-
-MiddleStack *TestGuiBase::get_middle_stack_widget() const
-{
-    return main_window.middle_stack_widget;
-}
-
-SettingsWidget *TestGuiBase::get_settings_widget() const
-{
-    return main_window.middle_stack_widget->settings_widget;
-}
