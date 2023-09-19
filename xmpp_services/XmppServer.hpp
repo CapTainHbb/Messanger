@@ -7,11 +7,11 @@
 #include <iostream>
 #include <stdexcept>
 
-#define USERNAME1 "qxmpp.test1"
-#define PASSWORD1 "qxmpp.test1"
+#define USERNAME1 "ahmad"
+#define PASSWORD1 "ahmad"
 
 #define USERNAME2 "captainhb"
-#define PASSWORD2 "capitanhb12345"
+#define PASSWORD2 "captainhb"
 
 class PasswordChecker : public QXmppPasswordChecker
 {

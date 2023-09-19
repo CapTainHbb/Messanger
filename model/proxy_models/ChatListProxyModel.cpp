@@ -115,7 +115,11 @@ void ChatListProxyModel::source_data_changed(const QModelIndex &topLeft, const Q
             return;
         }
     }
-    
+    if(!source_model->contact_has_chat(topLeft))
+    {
+        return;
+    }
+
     add_index_mapping(topLeft);
     emit dataChanged(index(0, 0), index(index_mapping.size() - 1));
 }

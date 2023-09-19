@@ -8,6 +8,8 @@ XmppClient::XmppClient(QObject *parent) :
     connect(this, &QXmppClient::connected, this, &XmppClient::on_connected_to_server);
     connect(this, &QXmppClient::disconnected, this, &XmppClient::on_disconnected_from_server);
     connect(this, &QXmppClient::error, this, &XmppClient::on_error_connection_to_server);
+    connect(roster_manager, &QXmppRosterManager::rosterReceived,
+            this, &XmppClient::on_roster_received);
     connect(roster_manager, &QXmppRosterManager::itemAdded,
             this, &XmppClient::on_item_added);
 }
@@ -46,6 +48,19 @@ void XmppClient::on_error_connection_to_server(Error error)
     emit connection_result(QXmppClient::State::DisconnectedState);
 }
 
+void XmppClient::on_roster_received()
+{
+    const QStringList jids = roster_manager->getRosterBareJids();
+    for (const QString &bareJid : jids) {
+        QString name = roster_manager->getRosterEntry(bareJid).name();
+        if (name.isEmpty()) {
+            name = "-";
+        }
+        qDebug("Roster received: %s [%s]", qPrintable(bareJid), qPrintable(name));
+        emit add_received_contact(bareJid);
+    }
+}
+
 void XmppClient::on_item_added(const QString &bareJid)
 {
     qDebug("on_item_added: %s", qPrintable(bareJid));
@@ -54,5 +69,5 @@ void XmppClient::on_item_added(const QString &bareJid)
 void XmppClient::on_request_add_contact(const QString& contact_jid)
 {
     qDebug("on_request_add_contact: %s", qPrintable(contact_jid));
-    roster_manager->addItem(contact_jid);
+    roster_manager->addRosterItem(contact_jid);
 }

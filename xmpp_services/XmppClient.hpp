@@ -22,6 +22,7 @@ public:
 
 signals:
     void connection_result(QXmppClient::State status);
+    void add_received_contact(const QString& contact_jid);
 
 public slots:
     void on_request_to_connect_server(const QString& username,
@@ -31,6 +32,8 @@ public slots:
     void on_connected_to_server();
     void on_disconnected_from_server();
     void on_error_connection_to_server(QXmppClient::Error error);
+
+    void on_roster_received();
 
     void on_item_added(const QString &bareJid);
 

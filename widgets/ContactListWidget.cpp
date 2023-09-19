@@ -21,20 +21,17 @@ void ContactListWidget::init_contact_list()
 {
     contact_list = new QListView(this);
     contact_list->setObjectName("contact_list");
+
+    // moc data
+//    model->source_model->add_contact("alice");
+//    model->source_model->add_contact("bob");`
+    //
+
     contact_list->setModel(model);
-    contact_list->setStyleSheet("background-color: bisque");
+    contact_list->setStyleSheet("background-color: grey");
     
     connect(contact_list, &QListView::doubleClicked,
             this, &ContactListWidget::on_item_double_clicked);
-
-    // // moc data
-    //  model->source_model->add_contact("alice");
-    //  model->source_model->add_contact("bob");
-    //  model->source_model->add_contact("jessy");
-    //  model->source_model->add_contact("harry");
-    //  model->source_model->add_contact("hossy");
-    //  model->source_model->add_contact("ahy");
-    // //
 
     vbox->addWidget(contact_list);
 }

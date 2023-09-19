@@ -91,6 +91,11 @@ void MainWindow::connect_signals_to_slots()
 
     connect(middle_stack_widget->add_contact_widget, &AddContactWidget::request_add_contact,
         &xmpp_client, &XmppClient::on_request_add_contact);
+
+    connect(&xmpp_client, &XmppClient::add_received_contact,
+    [&](const QString& contact_jid){
+        contact_proxy_model->source_model->add_contact(contact_jid);
+        });
 }
 
 void MainWindow::on_contact_item_selected(const Contact &index)
