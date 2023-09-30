@@ -13,9 +13,10 @@ private slots:
 
 void AddContact::initTestCase()
 {
-    QTestEventList click_on_add_contact;
-    click_on_add_contact.addMouseClick(Qt::LeftButton);
-    click_on_add_contact.simulate(get_left_drawer_widget()->add_contact_button);
+    connect_to_server(XMPP_TEST_CLIENT_USERNAME,
+                      XMPP_TEST_CLIENT_PASSWORD,
+                      XMPP_SERVER_ADDRESS);
+    left_click_on_widget(get_left_drawer_widget()->add_contact_button);
 }
 
 void AddContact::add_contact_data()
@@ -24,8 +25,8 @@ void AddContact::add_contact_data()
     QTest::addColumn<QString>("contact_domain");
 
     QTest::newRow("first_contact")
-            << "captainhb"
-            << "127.0.0.1";
+            << "ahmad"
+            << XMPP_SERVER_ADDRESS;
 }
 
 void AddContact::add_contact()
@@ -34,14 +35,10 @@ void AddContact::add_contact()
     QFETCH(QString, contact_domain);
 
     QString jid{ contact_username + "@" + contact_domain };
-    fill_text_input(jid, get_add_contact_widget()->contact_jid_text_input);
+    add_contact_from_gui(jid);
 
-    QTestEventList click_on_add_contact;
-    click_on_add_contact.addMouseClick(Qt::MouseButton::LeftButton);
-
-    click_on_add_contact.simulate(get_add_contact_widget()->add_contact_button);
-
-    auto found_contact { get_general_model()->get_contact(contact_username) };
+    Contact expected_contact{ jid };
+    QTRY_VERIFY(get_general_model()->get_last_added_contact() == expected_contact);
 }
 
 QTEST_MAIN(AddContact)

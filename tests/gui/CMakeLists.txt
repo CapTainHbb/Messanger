@@ -56,12 +56,22 @@ target_link_libraries(AddContact PRIVATE
         ${LOCAL_LINK_LIBRARIES}
 )
 
-add_executable(StartNewChat
-    StartNewChat.cpp
+add_executable(AddContactAndStartNewChat
+        AddContactAndStartNewChat.cpp
+        ${SOURCE_FILES}
+)
+
+target_link_libraries(AddContactAndStartNewChat PRIVATE
+        ${LOCAL_LINK_LIBRARIES}
+)
+
+
+add_executable(StartNewChatForExistingContact
+        StartNewChatForExistingContact.cpp
     ${SOURCE_FILES}
     )
 
-target_link_libraries(StartNewChat PRIVATE
+target_link_libraries(StartNewChatForExistingContact PRIVATE
     ${LOCAL_LINK_LIBRARIES}
 )
 

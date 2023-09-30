@@ -19,7 +19,11 @@ protected:
     void right_click_on_chat(const Contact& contact);
     void left_click_on_delete_chat();
 
+    void add_contact_from_gui(const QString& jid);
+
     void fill_text_input(const QString& text, QWidget* widget);
+
+    void left_click_on_widget(QWidget* widget);
 
 protected slots:
     virtual void initTestCase() = 0;

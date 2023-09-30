@@ -23,7 +23,6 @@ void MainWindow::init_models()
     contact_proxy_model = new ContactProxyModel(general_model);
     
     chat_list_proxy_model = new ChatListProxyModel(general_model);
-
 }
 
 void MainWindow::init_widgets()

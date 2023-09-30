@@ -20,14 +20,14 @@ void ContactListWidget::init_layout()
 void ContactListWidget::init_contact_list()
 {
     contact_list = new QListView(this);
-    contact_list->setObjectName("contact_list");
+    contact_list->setObjectName("contact_list_widget");
 
     // moc data
 //    model->source_model->add_contact("alice");
-//    model->source_model->add_contact("bob");`
+//    model->source_model->add_contact("bob");
     //
 
-    contact_list->setModel(model);
+    contact_list->setModel(model->source_model);
     contact_list->setStyleSheet("background-color: grey");
     
     connect(contact_list, &QListView::doubleClicked,

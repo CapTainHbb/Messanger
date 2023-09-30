@@ -20,6 +20,8 @@ public:
     XmppClient(QObject *parent = nullptr);
     ~XmppClient();
 
+    QXmppRosterManager *roster_manager;
+
 signals:
     void connection_result(QXmppClient::State status);
     void add_received_contact(const QString& contact_jid);
@@ -39,6 +41,4 @@ public slots:
 
     void on_request_add_contact(const QString& contact_jid);
 
-private:
-    QXmppRosterManager *roster_manager;
 };

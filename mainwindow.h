@@ -33,6 +33,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    XmppClient xmpp_client{ };
+
     GeneralModel *general_model{ nullptr };
     ContactProxyModel *contact_proxy_model{ nullptr };
     ChatListProxyModel *chat_list_proxy_model{ nullptr };
@@ -64,7 +66,7 @@ public slots:
 
 private:
     Ui::MainWindow *ui;
-    XmppClient xmpp_client{ };
+
 
 };
 #endif // MAINWINDOW_H

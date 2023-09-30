@@ -34,6 +34,7 @@ bool GeneralModel::setData(const QModelIndex &index,
         emit dataChanged(index, index, {role});
         return true;
     }
+
     return false;
 }
 
@@ -73,7 +74,13 @@ QVariant GeneralModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    if (role == Qt::DisplayRole || role == Qt::EditRole)
+    if(role == Qt::DisplayRole)
+    {
+        QVariant contact_name;
+        contact_name.setValue(contacts.at(index.row()).get_name());
+        return contact_name;
+    }
+    else if (role == Qt::EditRole || role == Qt::UserRole)
     {
         QVariant contact;
         contact.setValue(contacts.at(index.row()));
@@ -120,7 +127,7 @@ Contact GeneralModel::get_contact(QString contact_name) const
 
 Contact GeneralModel::get_contact(const QModelIndex& index) const
 {
-    auto contact_qvariant{ data(index, Qt::DisplayRole) };
+    auto contact_qvariant{ data(index, Qt::UserRole) };
 
     auto contact = contact_qvariant.value<Contact>();
     return contact;
@@ -170,12 +177,23 @@ QList<Contact> GeneralModel::get_contacts() const
 
     for (int r = 0; r < rowCount(); ++r) {
         auto model_index = index(r, 0);
-        auto model_data = data(model_index, Qt::DisplayRole);
+        auto model_data = data(model_index, Qt::UserRole);
         auto contact = model_data.value<Contact>();
         contacts.append(contact);
     }
 
     return contacts;
+}
+
+Contact GeneralModel::get_last_added_contact()
+{
+    if(rowCount() == 0)
+    {
+        return Contact{};
+    }
+
+    auto model_index{ index(0) };
+    return get_contact(model_index);
 }
 
 

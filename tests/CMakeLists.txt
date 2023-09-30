@@ -69,18 +69,23 @@ add_test(
 )
 
 add_test(
-        NAME FetchContactsFromServer
-        COMMAND $<TARGET_FILE:FetchContactsFromServer>
-)
-
-add_test(
         NAME AddContact
         COMMAND $<TARGET_FILE:AddContact>
 )
 
 add_test(
-  NAME StartNewChat
-  COMMAND $<TARGET_FILE:StartNewChat>
+        NAME AddContactAndStartNewChat
+        COMMAND $<TARGET_FILE:AddContactAndStartNewChat>
+)
+
+add_test(
+        NAME FetchContactsFromServer
+        COMMAND $<TARGET_FILE:FetchContactsFromServer>
+)
+
+add_test(
+  NAME StartNewChatForExistingContact
+  COMMAND $<TARGET_FILE:StartNewChatForExistingContact>
 )
 
 add_test(

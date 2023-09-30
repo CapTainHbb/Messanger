@@ -1,6 +1,6 @@
 #include <TestGuiBase.hpp>
 
-class StartNewChat : public TestGuiBase
+class StartNewChatForExistingContact : public TestGuiBase
 {
     Q_OBJECT
 
@@ -11,12 +11,12 @@ private slots:
     void start_new_chat();
 };
 
-void StartNewChat::initTestCase()
+void StartNewChatForExistingContact::initTestCase()
 {
     create_test_contacts();
 }
 
-void StartNewChat::start_new_chat_data()
+void StartNewChatForExistingContact::start_new_chat_data()
 {
     QTest::addColumn<QTestEventList>("click_on_contact_list");
     QTest::addColumn<Contact>("contact");
@@ -48,7 +48,7 @@ void StartNewChat::start_new_chat_data()
     
 }
 
-void StartNewChat::start_new_chat()
+void StartNewChatForExistingContact::start_new_chat()
 {
     QFETCH(QTestEventList, click_on_contact_list);
     QFETCH(Contact, contact);
@@ -84,5 +84,5 @@ void StartNewChat::start_new_chat()
     QVERIFY(get_chat_list_widget()->chat_exists(contact));
 }
 
-QTEST_MAIN(StartNewChat)
-#include "StartNewChat.moc"
+QTEST_MAIN(StartNewChatForExistingContact)
+#include "StartNewChatForExistingContact.moc"

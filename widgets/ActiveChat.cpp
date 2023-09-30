@@ -69,7 +69,8 @@ void ActiveChat::init_send_message_button()
     send_message_pushbutton->setHidden(true);
     vbox->addWidget(send_message_pushbutton);
 
-    connect(send_message_pushbutton, &QPushButton::clicked, this, &ActiveChat::on_send_message_clicked);
+    connect(send_message_pushbutton, &QPushButton::clicked,
+            this, &ActiveChat::on_send_message_clicked);
 }
 
 void ActiveChat::on_send_message_clicked()

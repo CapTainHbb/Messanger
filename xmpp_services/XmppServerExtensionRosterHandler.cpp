@@ -16,7 +16,7 @@ bool XmppServerExtensionRosterHandler::handleStanza(const QDomElement &stanza)
     return handleQueryElement(queryElement, iq);
 }
 
-bool XmppServerExtensionRosterHandler::handleQueryElement(const QDomElement& query_element, const QXmppIq& iq)
+bool XmppServerExtensionRosterHandler::handleQueryElement(const QDomElement& query_element, QXmppIq& iq)
 {
 
     if(query_element.namespaceURI() != QString(ns_roster))
@@ -42,7 +42,7 @@ bool XmppServerExtensionRosterHandler::handleQueryElement(const QDomElement& que
     }
 }
 
-bool XmppServerExtensionRosterHandler::handleSetRoster(const QDomElement& query_element, const QXmppIq& iq)
+bool XmppServerExtensionRosterHandler::handleSetRoster(const QDomElement& query_element, QXmppIq& iq)
 {
     QDomElement itemElement = query_element.firstChildElement(QStringLiteral("item"));
     QString sender_username{ iq.from().split('@').at(0) };
@@ -62,33 +62,27 @@ bool XmppServerExtensionRosterHandler::handleSetRoster(const QDomElement& query_
         itemElement = itemElement.nextSiblingElement(QStringLiteral("item"));
     }
 
-    sendSetRosterIqResult(sender_username, iq);
+    sendIq(iq, sender_username, QXmppIq::Type::Result);
+
+    captainhb_rosters.setId(iq.id());
+    sendIq(captainhb_rosters,sender_username, QXmppIq::Type::Set);
 
     return true;
 }
 
-void XmppServerExtensionRosterHandler::sendSetRosterIqResult(const QString& sender_name, const QXmppIq& iq)
-{
-    QXmppIq result;
-    result.setType(QXmppIq::Type::Result);
-    result.setTo(iq.from());
-    result.setFrom( sender_name + "@" + "127.0.0.1");
-    result.setId(iq.id());
-    server()->sendPacket(result);
-}
-
-
-bool XmppServerExtensionRosterHandler::handleGetRoster(const QDomElement& query_element, const QXmppIq& iq)
+bool XmppServerExtensionRosterHandler::handleGetRoster(const QDomElement& query_element, QXmppIq& iq)
 {
     QString sender_username{ iq.from().split('@').at(0) };
 
     if("ahmad" == sender_username)
     {
-        sendGetRosterIqResult(ahmad_rosters, iq);
+        ahmad_rosters.setId(iq.id());
+        sendIq(ahmad_rosters, sender_username , QXmppIq::Type::Result);
     }
     else if ("captainhb" == sender_username)
     {
-        sendGetRosterIqResult(captainhb_rosters, iq);
+        captainhb_rosters.setId(iq.id());
+        sendIq(captainhb_rosters, sender_username , QXmppIq::Type::Result);
     }
     else
     {
@@ -99,12 +93,3 @@ bool XmppServerExtensionRosterHandler::handleGetRoster(const QDomElement& query_
     return true;
 }
 
-void XmppServerExtensionRosterHandler::sendGetRosterIqResult(QXmppRosterIq &roster_iq, const QXmppIq& iq)
-{
-    QString sender_username{ iq.from().split('@').at(0) };
-    roster_iq.setFrom(sender_username + "@" + "127.0.0.1");
-    roster_iq.setId(iq.id());
-    roster_iq.setTo(iq.from());
-    roster_iq.setType(QXmppIq::Type::Result);
-    server()->sendPacket(roster_iq);
-}

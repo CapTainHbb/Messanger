@@ -26,7 +26,7 @@ public:
     QRect get_item_rect(const Contact& contact) const;
 
     ContactProxyModel *model{ nullptr };
-    
+
 signals:
     void selected_contact_item(const Contact &index);
 

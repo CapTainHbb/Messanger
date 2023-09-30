@@ -53,6 +53,8 @@ public:
 
     QList<Contact> get_contacts() const;
 
+    Contact get_last_added_contact();
+
     void add_chat_to_contact(const Contact& contact, const QString& chat_message);
     void add_chat_to_contact(const QModelIndex& model_index, const QString& chat_message);
 

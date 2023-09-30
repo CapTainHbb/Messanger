@@ -56,18 +56,16 @@ void XmppClient::on_roster_received()
         if (name.isEmpty()) {
             name = "-";
         }
-        qDebug("Roster received: %s [%s]", qPrintable(bareJid), qPrintable(name));
         emit add_received_contact(bareJid);
     }
 }
 
 void XmppClient::on_item_added(const QString &bareJid)
 {
-    qDebug("on_item_added: %s", qPrintable(bareJid));
+    emit add_received_contact(bareJid);
 }
 
 void XmppClient::on_request_add_contact(const QString& contact_jid)
 {
-    qDebug("on_request_add_contact: %s", qPrintable(contact_jid));
     roster_manager->addRosterItem(contact_jid);
 }
