@@ -45,6 +45,7 @@ void TestGuiBase::add_contact_from_gui(const QString& jid)
     click_on_add_contact.addMouseClick(Qt::MouseButton::LeftButton);
 
     click_on_add_contact.simulate(get_add_contact_widget()->add_contact_button);
+    get_add_contact_widget()->contact_jid_text_input->clear();
 }
 
 void TestGuiBase::fill_text_input(const QString& text, QWidget* widget)

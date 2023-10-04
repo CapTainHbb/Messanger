@@ -64,8 +64,16 @@ bool XmppServerExtensionRosterHandler::handleSetRoster(const QDomElement& query_
 
     sendIq(iq, sender_username, QXmppIq::Type::Result);
 
-    captainhb_rosters.setId(iq.id());
-    sendIq(captainhb_rosters,sender_username, QXmppIq::Type::Set);
+    if("captainhb" == sender_username)
+    {
+        captainhb_rosters.setId(iq.id());
+        sendIq(captainhb_rosters,sender_username, QXmppIq::Type::Set);
+    }
+    else if("ahmad" == sender_username)
+    {
+        ahmad_rosters.setId(iq.id());
+        sendIq(ahmad_rosters,sender_username, QXmppIq::Type::Set);
+    }
 
     return true;
 }

@@ -110,7 +110,6 @@ void TestBase::connect_to_server(const QString& username,
     get_settings_widget()->password_text_input->setText(password);
     get_settings_widget()->domain_name_text_input->setText(domain_name);
 
-    get_xmpp_client()->logger()->setLoggingType(QXmppLogger::NoLogging);
     get_settings_widget()->on_click_connect_to_server_button();
     QTRY_COMPARE(get_settings_widget()->get_last_connection_result(), QXmppClient::State::ConnectedState);
 

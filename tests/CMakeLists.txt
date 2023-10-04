@@ -25,6 +25,8 @@ set(SOURCE_FILES
         ${PROJECT_SOURCE_DIR}/tests/TestBase.cpp
         ${PROJECT_SOURCE_DIR}/tests/gui/TestGuiBase.cpp
         ${PROJECT_SOURCE_DIR}/xmpp_services/XmppClient.cpp
+        ${PROJECT_SOURCE_DIR}/xmpp_services/XmppServer.cpp
+        ${PROJECT_SOURCE_DIR}/xmpp_services/XmppServerExtensionRosterHandler.cpp
         ${PROJECT_SOURCE_DIR}/tests/model/TestModelBase.cpp)
 
 set(LOCAL_LINK_LIBRARIES

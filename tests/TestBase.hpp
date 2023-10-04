@@ -14,7 +14,7 @@
 
 #define XMPP_TEST_CLIENT_JID        "captainhb@127.0.0.1"
 #define XMPP_TEST_CLIENT_USERNAME   "captainhb"
-#define XMPP_TEST_CLIENT_PASSWORD          "captainhb"
+#define XMPP_TEST_CLIENT_PASSWORD   "captainhb"
 #define XMPP_SERVER_ADDRESS         "127.0.0.1"
 
 class TestBase : public QObject
