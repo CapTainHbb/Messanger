@@ -104,25 +104,25 @@ bool GeneralModel::contact_has_chat(const QModelIndex& model_index) const
 
 bool GeneralModel::contact_has_chat(const Contact& contact) const
 {
-    auto contact_in_model{ get_contact(contact.get_name()) };
+    auto contact_in_model{ get_contact(contact) };
     if(contact_in_model.chat_count() > 0)
     {
         return true;
     }
-    
+
     return false;
 }
 
-Contact GeneralModel::get_contact(QString contact_name) const
+Contact GeneralModel::get_contact(const Contact& _contact) const
 {
     for(const auto& contact : contacts)
     {
-        if (contact_name == contact.get_name())
+        if (_contact == contact)
         {
             return contact;
         }
     }
-    throw std::invalid_argument(contact_name.toStdString() + " not found!");
+    throw std::invalid_argument(_contact.get_jid().toStdString() + " not found!");
 }
 
 Contact GeneralModel::get_contact(const QModelIndex& index) const
@@ -133,10 +133,20 @@ Contact GeneralModel::get_contact(const QModelIndex& index) const
     return contact;
 }
 
-
-void GeneralModel::add_contact(QString contact_name)
+int GeneralModel::get_contact_count() const
 {
-    Contact contact{ contact_name };
+    return contacts.count();
+}
+
+void GeneralModel::delete_all_contacts()
+{
+    removeRows(0, rowCount());
+}
+
+
+
+void GeneralModel::add_contact(const Contact& contact)
+{
     insertRows(0, 1);
 
     auto model_index = index(0, Qt::DisplayRole);
@@ -171,18 +181,34 @@ QModelIndex GeneralModel::get_contact_model_index(const Contact& contact)
     throw std::invalid_argument("contact not found");
 }
 
+bool GeneralModel::contact_exists(const QString& contact_name)
+{
+    return contact_exists(Contact(contact_name));
+}
+
+bool GeneralModel::contact_exists(const Contact& contact)
+{
+    auto contact_iter { std::find(contacts.begin(), contacts.end(),contact) };
+    if(contact_iter == contacts.end())
+    {
+        return false;
+    }
+
+    return true;
+}
+
 QList<Contact> GeneralModel::get_contacts() const
 {
-    QList<Contact> contacts;
+    QList<Contact> all_contacts;
 
     for (int r = 0; r < rowCount(); ++r) {
         auto model_index = index(r, 0);
         auto model_data = data(model_index, Qt::UserRole);
         auto contact = model_data.value<Contact>();
-        contacts.append(contact);
+        all_contacts.append(contact);
     }
 
-    return contacts;
+    return all_contacts;
 }
 
 Contact GeneralModel::get_last_added_contact()
@@ -199,7 +225,7 @@ Contact GeneralModel::get_last_added_contact()
 
 void GeneralModel::add_chat_to_contact(const Contact& contact, const QString& chat_message)
 {
-    auto model_index{ get_contact_model_index(contact.get_name()) };
+    auto model_index{ get_contact_model_index(contact) };
     add_chat_to_contact(model_index, chat_message);
 }
 

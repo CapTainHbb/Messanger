@@ -1,14 +1,14 @@
 #include <TestBase.hpp>
+#include <utility>
 
 TestBase::TestBase(/* args */)
 {
     set_general_model(main_window.general_model);
-    xmpp_test_server = new QProcess(this);
 }
 
 TestBase::~TestBase()
 {
-    xmpp_test_server->close();
+
 }
 
 ContactListWidget *TestBase::get_contact_list_wiget() const
@@ -52,32 +52,15 @@ XmppClient *TestBase::get_xmpp_client()
     return &main_window.xmpp_client;
 }
 
-
-void TestBase::create_test_contacts()
+void TestBase::add_contact_to_model(const Contact& contact) const
 {
-    add_contact("alice");
-    add_contact("bob");
-    add_contact("harry");
-    add_contact("sam");
+    main_window.contact_proxy_model->source_model->add_contact(contact);
 }
 
-void TestBase::create_test_chats()
-{
-    auto contacts_in_model{ get_general_model()->get_contacts() };
-    for (int i = contacts_in_model.count() - 1; i >= 0; i--)
-    {
-        get_general_model()->add_chat_to_contact(contacts_in_model.at(i), "hi " + contacts_in_model.at(i).get_name());
-    }
-}
 
-void TestBase::add_contact(QString contact_name)
+Contact TestBase::get_contact_from_model(const Contact& contact) const
 {
-    main_window.contact_proxy_model->source_model->add_contact(contact_name);
-}
-
-Contact TestBase::get_contact(QString contact_name)
-{
-    return main_window.contact_proxy_model->source_model->get_contact(contact_name);
+    return main_window.contact_proxy_model->source_model->get_contact(contact);
 }
 
 GeneralModel *TestBase::get_general_model()
@@ -90,37 +73,11 @@ void TestBase::set_general_model(GeneralModel *model)
     general_model = model;
 }
 
-void TestBase::start_xmpp_test_server()
+void TestBase::create_test_contacts()
 {
-    xmpp_test_server->start(xmpp_server_app_path);
+    test_contacts.append(Contact("alice"));
+    test_contacts.append(Contact("harry"));
+    test_contacts.append(Contact("bob"));
+    test_contacts.append(Contact("sam"));
 }
 
-
-void TestBase::connect_to_server(const QString& username,
-                       const QString& password,
-                       const QString& domain_name)
-{
-    static int is_already_connected{ false };
-    if(is_already_connected)
-    {
-        return;
-    }
-
-    get_settings_widget()->username_text_input->setText(username);
-    get_settings_widget()->password_text_input->setText(password);
-    get_settings_widget()->domain_name_text_input->setText(domain_name);
-
-    get_settings_widget()->on_click_connect_to_server_button();
-    QTRY_COMPARE(get_settings_widget()->get_last_connection_result(), QXmppClient::State::ConnectedState);
-
-    is_already_connected = true;
-}
-
-void TestBase::connect_xmpp_test_client_to_server()
-{
-    xmpp_test_client.logger()->setLoggingType(QXmppLogger::NoLogging);
-    QSignalSpy spy_on_connection(&xmpp_test_client,
-                                 SIGNAL(connected()));
-    xmpp_test_client.connectToServer(XMPP_TEST_CLIENT_JID, XMPP_TEST_CLIENT_PASSWORD);
-    QTRY_COMPARE(spy_on_connection.count(), 1);
-}

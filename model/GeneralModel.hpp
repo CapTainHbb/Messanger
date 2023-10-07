@@ -43,14 +43,18 @@ public:
     bool contact_has_chat(const QModelIndex& model_index) const;
     bool contact_has_chat(const Contact& contact) const;
 
-    void add_contact(QString contact_name);
+    void add_contact(const Contact& contact);
     void update_contact(const Contact& contact);
 
-    Contact get_contact(QString contact_name) const;
+    Contact get_contact(const Contact& contact) const;
     Contact get_contact(const QModelIndex& index) const;
+    int get_contact_count() const;
+    void delete_all_contacts();
 
     QModelIndex get_contact_model_index(const Contact& contact);
 
+    bool contact_exists(const Contact& contact);
+    bool contact_exists(const QString& contact_name);
     QList<Contact> get_contacts() const;
 
     Contact get_last_added_contact();

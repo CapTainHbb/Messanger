@@ -8,7 +8,7 @@ private slots:
     
     void click_on_contact_list();
     void click_on_chat_list();
-    void click_on_setttings();
+    void click_on_settings();
     void click_on_add_contact();
 };
 
@@ -37,7 +37,7 @@ void ClickOnLeftDrawerButtons::click_on_chat_list()
     QVERIFY(get_left_drawer_widget()->add_contact_button->isChecked() == false);
 }
 
-void ClickOnLeftDrawerButtons::click_on_setttings()
+void ClickOnLeftDrawerButtons::click_on_settings()
 {
     left_click_on_widget(get_left_drawer_widget()->settings_button);
     QVERIFY(get_middle_stack_widget()->currentIndex() == SETTINGS_INDEX);

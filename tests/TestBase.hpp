@@ -1,5 +1,6 @@
 #pragma once
 
+#include <XmppServer.hpp>
 #include <QTest>
 #include <QWidget>
 #include <QTimer>
@@ -23,7 +24,7 @@ class TestBase : public QObject
 
 protected:
     MainWindow main_window;
-    QList<Contact> test_contacts;
+
     GeneralModel *general_model{ nullptr };
 
     ContactListWidget *get_contact_list_wiget() const;
@@ -35,25 +36,17 @@ protected:
     SettingsWidget *get_settings_widget() const;
     XmppClient *get_xmpp_client();
 
-    void create_test_contacts();
-    void create_test_chats();
-
-    void add_contact(QString contact_name);
-    Contact get_contact(QString contact_name);
+    void add_contact_to_model(const Contact& contact) const;
+    Contact get_contact_from_model(const Contact& contact) const;
 
     GeneralModel *get_general_model();
     void set_general_model(GeneralModel *model);
 
-    QString xmpp_server_app_path{PATH_TO_XMPP_SERVER_APP };
-    QProcess *xmpp_test_server{ nullptr };
-    void start_xmpp_test_server();
-
-    void connect_to_server(const QString& username,
-                           const QString& password,
-                           const QString& domain_name);
-
+    XmppServer server{ "127.0.0.1" };
     XmppClient xmpp_test_client;
-    void connect_xmpp_test_client_to_server();
+
+    QList<Contact> test_contacts{ };
+    void create_test_contacts();
 
 public:
     TestBase(/* args */);

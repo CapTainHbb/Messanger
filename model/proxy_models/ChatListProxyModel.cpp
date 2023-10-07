@@ -74,7 +74,7 @@ int ChatListProxyModel::map_source_row_to_proxy_row(int row) const
         }
     }
     
-    throw std::invalid_argument("invalid source row index");
+    throw std::invalid_argument("invalid source row index#" + std::to_string(row));
 }
 
 

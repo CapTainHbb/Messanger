@@ -93,7 +93,9 @@ void MainWindow::connect_signals_to_slots()
 
     connect(&xmpp_client, &XmppClient::add_received_contact,
     [&](const QString& contact_jid){
-        contact_proxy_model->source_model->add_contact(contact_jid);
+        Contact contact_to_add{ };
+        contact_to_add.from_jid(contact_jid);
+        contact_proxy_model->source_model->add_contact(contact_to_add);
         });
 }
 

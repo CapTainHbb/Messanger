@@ -23,8 +23,8 @@ void ContactListWidget::init_contact_list()
     contact_list->setObjectName("contact_list_widget");
 
     // moc data
-//    model->source_model->add_contact("alice");
-//    model->source_model->add_contact("bob");
+//    model->source_model->add_contact_to_model("alice");
+//    model->source_model->add_contact_to_model("bob");
     //
 
     contact_list->setModel(model->source_model);

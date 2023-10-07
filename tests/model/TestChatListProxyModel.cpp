@@ -31,10 +31,7 @@ void TestChatListProxyModel::initTestCase()
 {
     set_general_model(main_window.general_model);
     chat_list_model = main_window.chat_list_proxy_model;
-    test_contacts.append(Contact("alice"));
-    test_contacts.append(Contact("harry"));
-    test_contacts.append(Contact("bob"));
-    test_contacts.append(Contact("sam"));
+    create_test_contacts();
 }
 
 void TestChatListProxyModel::create_contact_data()
@@ -52,11 +49,11 @@ void TestChatListProxyModel::create_contact()
 {
     QFETCH(Contact, contact);
 
-    add_contact(contact.get_name());
+    add_contact_to_model(contact);
 
-    auto contact_in_model{ get_contact(contact.get_name()) };
+    auto contact_in_model{ get_contact_from_model(contact) };
 
-    QCOMPARE(contact_in_model.get_name(), contact.get_name());
+    QVERIFY(contact_in_model == contact);
 }
 
 

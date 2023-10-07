@@ -10,50 +10,38 @@ private slots:
     void send_new_message_in_existing_chat_data();
     void send_new_message_in_existing_chat();
 
-    void check_chat_uniquness_data();
     void check_chat_uniquness();
 };
 
 void SendNewMessageInExistingChat::initTestCase()
 {
-    create_test_contacts(); 
-    create_test_chats();   
+    connect_to_server_from_gui(XMPP_TEST_CLIENT_USERNAME,
+                               XMPP_TEST_CLIENT_PASSWORD,
+                               XMPP_SERVER_ADDRESS);
+    create_test_contacts_from_gui();
+    create_test_chats_from_gui();
 }
 
 void SendNewMessageInExistingChat::send_new_message_in_existing_chat_data()
 {
     QTest::addColumn<Contact>("contact");
-    QTest::addColumn<QTestEventList>("type_message");
-    QTest::addColumn<QTestEventList>("click_on_send_message");
     QTest::addColumn<QString>("message_text");
     QTest::addColumn<int>("number_of_message_in_active_chat");
-    
+
+    QString pre_text_message{ "how is every thing" };
+    create_test_chats_from_gui(pre_text_message);
     for(const auto& contact : main_window.contact_proxy_model->source_model->get_contacts())
     {
-        QTestEventList click_on_contact_list{ };
-        click_on_contact_list.addMouseClick(Qt::MouseButton::LeftButton);
-                        
-        QString message_text{ "how is every thing " + contact.get_name() };
-        QTestEventList type_message;
-        type_message.addKeyClicks(message_text);
-        
-        QTestEventList click_on_send_message;
-        click_on_send_message.addMouseClick(Qt::MouseButton::LeftButton);
-
         QTest::newRow(contact.get_name().toLocal8Bit()) 
                 << contact 
-                << type_message
-                << click_on_send_message
-                << message_text
-                << contact.chat_count() + 1;
+                << pre_text_message + contact.get_name()
+                << contact.chat_count();
     }
 }
 
 void SendNewMessageInExistingChat::send_new_message_in_existing_chat()
 {
     QFETCH(Contact, contact);
-    QFETCH(QTestEventList, type_message);
-    QFETCH(QTestEventList, click_on_send_message);
     QFETCH(QString, message_text);
     QFETCH(int, number_of_message_in_active_chat);
 
@@ -68,16 +56,8 @@ void SendNewMessageInExistingChat::send_new_message_in_existing_chat()
 
     QCOMPARE(get_active_chat_widget()->get_chat_name(), contact.get_name());
 
-    type_message.simulate(get_active_chat_widget()->send_message_textbox);
-    click_on_send_message.simulate(get_active_chat_widget()->send_message_pushbutton);
-
     QCOMPARE(get_active_chat_widget()->get_number_of_messages(), number_of_message_in_active_chat);
     QCOMPARE(get_active_chat_widget()->get_last_message(), message_text);
-}
-
-void SendNewMessageInExistingChat::check_chat_uniquness_data()
-{
-
 }
 
 void SendNewMessageInExistingChat::check_chat_uniquness()

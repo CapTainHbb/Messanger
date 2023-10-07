@@ -15,15 +15,19 @@ private slots:
 
 void DeleteChat::initTestCase()
 {
-    create_test_contacts();
-    create_test_chats();
+    connect_to_server_from_gui(XMPP_TEST_CLIENT_USERNAME,
+                               XMPP_TEST_CLIENT_PASSWORD,
+                               XMPP_SERVER_ADDRESS);
+
+    create_test_contacts_from_gui();
+    create_test_chats_from_gui();
 }
 
 void DeleteChat::delete_selected_chat_data()
 {
     QTest::addColumn<Contact>("contact");
     
-    for (const auto contact : get_general_model()->get_contacts())
+    for (const auto& contact : get_general_model()->get_contacts())
     {
         QTest::newRow(contact.get_name().toLocal8Bit()) << contact;
     }    
@@ -45,8 +49,7 @@ void DeleteChat::delete_selected_chat()
 
 void DeleteChat::delete_unselected_chat()
 {
-    create_test_chats();
-
+    create_test_chats_from_gui();
     auto contacts_in_model{ get_general_model()->get_contacts() };
 
     QVERIFY(contacts_in_model.count() > 1);

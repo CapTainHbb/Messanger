@@ -28,8 +28,11 @@ SelectExistingChat::~SelectExistingChat()
 
 void SelectExistingChat::initTestCase()
 {
-    create_test_contacts();
-    create_test_chats();
+    connect_to_server_from_gui(XMPP_TEST_CLIENT_USERNAME,
+                               XMPP_TEST_CLIENT_PASSWORD,
+                               XMPP_SERVER_ADDRESS);
+    create_test_contacts_from_gui();
+    create_test_chats_from_gui();
 }
 
 void SelectExistingChat::select_existing_chat_data()
@@ -37,7 +40,9 @@ void SelectExistingChat::select_existing_chat_data()
     QTest::addColumn<Contact>("contact_in_chat_list");
     QTest::addColumn<Contact>("contact_in_active_chat");
 
-    for(auto contact : get_general_model()->get_contacts())
+    QTRY_VERIFY(get_general_model()->get_contact_count() > 0);
+
+    for(const auto& contact : get_general_model()->get_contacts())
     {
         QTest::newRow(contact.get_name().toLocal8Bit()) << contact << contact;
     }

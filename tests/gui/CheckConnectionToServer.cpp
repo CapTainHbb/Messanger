@@ -13,7 +13,6 @@ private slots:
 
 void CheckConnectionToServer::initTestCase()
 {
-    start_xmpp_test_server();
     left_click_on_widget(get_left_drawer_widget()->settings_button);
 }
 
@@ -35,17 +34,9 @@ void CheckConnectionToServer::check_connection_to_server()
     QFETCH(QString, password);
     QFETCH(QString, domain_name);
 
-    fill_text_input(username, get_settings_widget()->username_text_input);
-    fill_text_input(password, get_settings_widget()->password_text_input);
-    fill_text_input(domain_name, get_settings_widget()->domain_name_text_input);
-
-    {
-        // does not work and I don't know why!!
-//        left_click_on_widget(get_settings_widget()->connect_to_server_button);
-    }
-
-    get_settings_widget()->on_click_connect_to_server_button();
-    QTRY_COMPARE(get_settings_widget()->get_last_connection_result(), QXmppClient::State::ConnectedState);
+    connect_to_server_from_gui(username,
+                               password,
+                               domain_name);
 }
 
 

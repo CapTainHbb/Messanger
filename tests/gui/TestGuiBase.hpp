@@ -19,11 +19,20 @@ protected:
     void right_click_on_chat(const Contact& contact);
     void left_click_on_delete_chat();
 
-    void add_contact_from_gui(const QString& jid);
+    void add_contact_from_gui(const Contact& contact);
 
     void fill_text_input(const QString& text, QWidget* widget);
 
     void left_click_on_widget(QWidget* widget);
+
+    void connect_to_server_from_gui(const QString& username,
+                                    const QString& password,
+                                    const QString& domain_name,
+                                    QXmppClient::State desired_state = QXmppClient::State::ConnectedState);
+
+    void create_test_contacts_from_gui();
+
+    void create_test_chats_from_gui(const QString& pre_text = "hi");
 
 protected slots:
     virtual void initTestCase() = 0;

@@ -16,9 +16,13 @@ void AddContactWidget::init_layout()
 
 void AddContactWidget::init_add_contact_form()
 {
-    contact_jid_text_input = new QLineEdit(this);
-    contact_jid_text_input->setObjectName("contact_jid_text_input");
-    layout->addRow("contact jid", contact_jid_text_input);
+    contact_name_text_input = new QLineEdit(this);
+    contact_name_text_input->setObjectName("contact_name_text_input");
+    layout->addRow("contact name", contact_name_text_input);
+
+    contact_domain_text_input = new QLineEdit(this);
+    contact_domain_text_input->setObjectName("contact_domain_text_input");
+    layout->addRow("contact domain", contact_domain_text_input);
 
     add_contact_button = new QPushButton(this);
     add_contact_button->setObjectName("add_contact_button");
@@ -31,6 +35,6 @@ void AddContactWidget::init_add_contact_form()
 
 void AddContactWidget::on_add_contact_button_clicked()
 {
-    auto contact_jid{ contact_jid_text_input->text() };
-    emit request_add_contact(contact_jid);
+    Contact contact_to_add{ contact_name_text_input->text(), contact_domain_text_input->text() };
+    emit request_add_contact(contact_to_add.get_jid());
 }

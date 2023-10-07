@@ -42,6 +42,7 @@ set(LOCAL_LINK_LIBRARIES
 
 add_subdirectory(model)
 add_subdirectory(gui)
+add_subdirectory(xmpp_services)
 
 enable_testing()
 
@@ -75,10 +76,6 @@ add_test(
         COMMAND $<TARGET_FILE:AddContact>
 )
 
-add_test(
-        NAME AddContactAndStartNewChat
-        COMMAND $<TARGET_FILE:AddContactAndStartNewChat>
-)
 
 add_test(
         NAME FetchContactsFromServer

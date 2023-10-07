@@ -1,16 +1,31 @@
 #include "Contact.hpp"
 
+#include <utility>
 
-bool Contact::operator==(const Contact& other)
+void Contact::from_jid(const QString& _jid)
 {
-    if(name == other.name)
+    auto splitted_jid{ _jid.split('@') };
+    if(splitted_jid.count() != 2)
+    {
+        throw std::invalid_argument("invalid jid " + _jid.toStdString());
+    }
+
+    set_name(splitted_jid.at(0));
+    set_domain(splitted_jid.at(1));
+    create_jid();
+}
+
+
+bool Contact::operator==(const Contact& other) const
+{
+    if(get_jid() == other.get_jid())
     {
         return true;
     }
     return false;
 }
 
-bool Contact::operator!=(const Contact& other)
+bool Contact::operator!=(const Contact& other) const
 {
     if( (*this) == other)
     {
@@ -34,12 +49,32 @@ bool Contact::operator<(const Contact& other)
 
 void Contact::set_name(QString name)
 {
-    this->name = name;
+    this->name = std::move(name);
 }
 
 QString Contact::get_name() const
 {
     return name;
+}
+
+void Contact::set_domain(const QString& domain)
+{
+    this->domain = domain;
+}
+
+QString Contact::get_domain() const
+{
+    return this->domain;
+}
+
+void Contact::create_jid()
+{
+    jid = name + "@" + domain;
+}
+
+QString Contact::get_jid() const
+{
+    return this->jid;
 }
 
 void Contact::add_chat(const QString& chat_text)
